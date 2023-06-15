@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  web:
+    image: nginx:1.14-alpine
+    ports:
+      - "80:80"
+    working_dir: /etc/nginx
+    volumes:
+      - ./backend:/backend
+      - .web/sites:/etc/nginx/conf.d
+      - .web/certs:/certs
+    links:
+      - backend
+
+  backend:
+    build:
+      context: .backend/
+      dockerfile: Dockerfile
+    working_dir: /backend
+    user: docker
+    volumes:
+      - ./backend:/backend
+      - .backend/bash_history:/home/.bash_history
+    environment:
+      DB_CONNECTION: pgsql
+      DB_PORT: 5432
+      DB_HOST: database
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+      DB_DATABASE: app
+      HISTFILE: /home/.bash_history
+    expose:
+      - 9000
+
+  database:
+    image: postgres:15-alpine
+    volumes:
+      - coffeeDB:/home/pgsql/data
+    environment:
+      PGDATA: /home/pgsql/data
+      POSTGRES_DB: app
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    expose:
+      - 5432
+
+  database_for_testing:
+    image: postgres:15-alpine
+    tmpfs: /var/lib/postgresql
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    expose:
+      - 5432
+
+  adminer:
+    image: adminer:4.8.1
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+
+volumes:
+  coffeeDB:
+
