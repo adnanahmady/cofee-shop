@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\ExceptionMessages\InvalidEmailMessage;
 use App\Exceptions\InvalidCredentialException;
 use App\Models\User;
+use App\ValueObjects\Users\NameInterface;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository
@@ -19,15 +20,37 @@ class UserRepository
         return $user->createToken($user->getEmail())->plainTextToken;
     }
 
+    public function logout(User $user): void
+    {
+        $user->tokens()->delete();
+    }
+
+    public function register(
+        NameInterface $name,
+        string $email,
+        string $password
+    ): User {
+        $user = new User();
+        $user->setName($name);
+        $user->setEmail($email);
+        $user->setPassword($password);
+        $user->save();
+
+        return $user;
+    }
+
     /**
      * Find's the user using the given email
      * and creates a token for the user.
      * After that returns the token and the
      * token user.
      *
-     * @param string $email email
+     * @param string $email    email
+     * @param string $password password
      *
      * @return array<string, User>
+     *
+     * @throws InvalidCredentialException
      */
     public function loginByEmail(string $email, string $password): array
     {

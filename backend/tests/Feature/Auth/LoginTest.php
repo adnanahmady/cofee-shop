@@ -34,24 +34,24 @@ class LoginTest extends TestCase
     {
         return [
             'credentials should be correct' => [[
-                'email' => 'user@example.com',
-                'password' => 'invalid-password',
+                LoginRequest::EMAIL => 'user@example.com',
+                LoginRequest::PASSWORD => 'invalid-password',
                 'createUser' => true,
             ]],
             'password is required' => [[
-                'email' => 'user@example.com',
+                LoginRequest::EMAIL => 'user@example.com',
                 'createUser' => true,
             ]],
             'email is required' => [[
-                'password' => 'password',
+                LoginRequest::PASSWORD => 'password',
             ]],
             'email need to exist in database' => [[
-                'email' => 'user@example.com',
-                'password' => 'password',
+                LoginRequest::EMAIL => 'user@example.com',
+                LoginRequest::PASSWORD => 'password',
             ]],
             'email need to be in email format' => [[
-                'email' => 'not.in.email.form',
-                'password' => 'password',
+                LoginRequest::EMAIL => 'not.in.email.form',
+                LoginRequest::PASSWORD => 'password',
             ]],
         ];
     }

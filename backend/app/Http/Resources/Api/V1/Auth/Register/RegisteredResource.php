@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Auth\Login;
+namespace App\Http\Resources\Api\V1\Auth\Register;
 
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LoggedInResource extends JsonResource
+class RegisteredResource extends JsonResource
 {
     public const DATA = 'data';
-    public const META = 'meta';
 
-    public function __construct($resource, private User $user)
-    {
-        parent::__construct($resource);
-    }
+    /** @var User */
+    public $resource;
 
     /**
      * Transform the resource into an array.
@@ -25,8 +22,7 @@ class LoggedInResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            self::DATA => new DataResource($this->resource),
-            self::META => new MetaResource($this->user),
+            self::DATA => new UserResource($this->resource),
         ];
     }
 
