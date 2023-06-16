@@ -17,7 +17,7 @@ return $config->setRules([
     '@PSR12' => true,
     '@PER' => true,
     'php_unit_method_casing' => ['case' => 'snake_case'],
-//    'php_unit_test_annotation' => ['style' => 'annotation'],
+    'void_return' => true,
 ])
     ->setFinder($finder)
     ->setRiskyAllowed(true);

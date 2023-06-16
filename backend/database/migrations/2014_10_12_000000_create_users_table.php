@@ -1,22 +1,22 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+        Schema::create(User::TABLE, function (Blueprint $table): void {
+            $table->id(User::ID);
+            $table->string(User::FIRST_NAME);
+            $table->string(User::LAST_NAME);
+            $table->string(User::EMAIL)->unique();
+            $table->string(User::PASSWORD);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists(User::TABLE);
     }
 };

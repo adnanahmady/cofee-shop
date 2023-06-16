@@ -19,8 +19,6 @@ trait MigrateDatabaseTrait
      * after a while the tests may reach the database make
      * connection numbers. therefore it's important to close
      * the database connection after each test is done.
-     *
-     * @return void
      */
     protected function migrateDatabaseTearDown(): void
     {

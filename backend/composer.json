@@ -29,6 +29,9 @@
         }
     },
     "autoload-dev": {
+        "files": [
+            "tests/Helpers/createFunctions.php"
+        ],
         "psr-4": {
             "Tests\\": "tests/"
         }
