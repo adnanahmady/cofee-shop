@@ -7,9 +7,9 @@ use Laravel\Sanctum\Sanctum;
 
 trait LetsBeTrait
 {
-    public function letsBe(User $user): User
+    public function letsBe(User $user, array $abilities = []): User
     {
-        Sanctum::actingAs($user, guard: 'api');
+        Sanctum::actingAs(user: $user, abilities: $abilities, guard: 'api');
 
         return $user;
     }

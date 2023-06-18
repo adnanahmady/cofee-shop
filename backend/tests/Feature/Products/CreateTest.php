@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Products;
 
+use App\Enums\AbilityEnum;
 use App\Http\Requests\Api\V1\Products\StoreRequest;
 use App\Http\Resources\Api\V1\Products\Store;
+use App\Models\Ability;
+use App\Models\User;
 use App\ValueObjects\Products\PriceObject;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,10 +19,24 @@ class CreateTest extends TestCase
     use MigrateDatabaseTrait;
     use LetsBeTrait;
 
+    public function test_only_managers_should_be_able_to_add_products(): void
+    {
+        $this->login(abilities: ['not-manager']);
+        $data = [
+            StoreRequest::NAME => 'radio',
+            StoreRequest::PRICE => 345345,
+            StoreRequest::CURRENCY => createCurrency()->getId(),
+        ];
+
+        $response = $this->request($data);
+
+        $response->assertForbidden();
+    }
+
     public function test_response_should_not_escape_unicode_characters(): void
     {
         $this->withoutExceptionHandling();
-        $this->letsBe(createUser());
+        $this->login();
         $data = [
             StoreRequest::NAME => $name = 'تلویزیون',
             StoreRequest::PRICE => 345345,
@@ -79,7 +96,7 @@ class CreateTest extends TestCase
         if (key_exists('createCurrency', $data)) {
             $data[StoreRequest::CURRENCY] = createCurrency()->getId();
         }
-        $this->letsBe(createUser());
+        $this->login();
 
         $response = $this->request($data);
 
@@ -90,7 +107,7 @@ class CreateTest extends TestCase
     public function test_meta_should_be_in_expected_form(): void
     {
         $this->withoutExceptionHandling();
-        $this->letsBe(createUser());
+        $this->login();
         $priceObject = new PriceObject(100033, createCurrency()->getId());
         $data = [
             StoreRequest::NAME => 'clock',
@@ -116,7 +133,7 @@ class CreateTest extends TestCase
     public function test_data_should_be_in_expected_form(): void
     {
         $this->withoutExceptionHandling();
-        $this->letsBe(createUser());
+        $this->login();
         $priceObject = new PriceObject(100033, createCurrency()->getId());
         $data = [
             StoreRequest::NAME => 'clock',
@@ -144,7 +161,7 @@ class CreateTest extends TestCase
 
     public function test_it_responses_with_proper_status_code(): void
     {
-        $this->letsBe(createUser());
+        $this->login();
         $data = [
             StoreRequest::NAME => 'clock',
             StoreRequest::PRICE => 1000,
@@ -162,5 +179,20 @@ class CreateTest extends TestCase
             uri: route('api.v1.products.store'),
             data: $data
         );
+    }
+
+    private function login(User $user = null, array $abilities = []): void
+    {
+        if (null === $user) {
+            $user = createUser();
+        }
+        if (empty($abilities)) {
+            $user->roles()->save($role = createRole());
+            $role->abilities()->save($ability = createAbility([
+                Ability::SLUG => AbilityEnum::AddProduct->slugify(),
+            ]));
+            $abilities = [$ability->getSlug()];
+        }
+        $this->letsBe($user, $abilities);
     }
 }

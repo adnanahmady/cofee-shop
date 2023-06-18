@@ -3,9 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Contracts\RoleUserContract;
 use App\ValueObjects\Users\NameInterface;
 use App\ValueObjects\Users\NameObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -116,5 +118,13 @@ class User extends Authenticatable
     public function getUpdatedAt(): string
     {
         return $this->{self::UPDATED_AT};
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Role::class,
+            RoleUserContract::TABLE
+        );
     }
 }

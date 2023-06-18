@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Resources\Api\V1\Auth\Login;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -13,6 +14,26 @@ use Tests\Traits\MigrateDatabaseTrait;
 class LoginTest extends TestCase
 {
     use MigrateDatabaseTrait;
+
+    public function test_user_can_login_with_different_roles(): void
+    {
+        $this->withoutExceptionHandling();
+        $user = createUser();
+        $user->roles()->save($role = createRole());
+        $ability = createAbility();
+        $role->abilities()->save($ability);
+
+        $this->request(
+            email: $user->getEmail(),
+            password: 'password',
+            as: $role->getSlug(),
+        )->json();
+
+        $this->assertDatabaseHas(
+            'personal_access_tokens',
+            ['abilities' => sprintf('["%s"]', $ability->getSlug())]
+        );
+    }
 
     public function test_response_should_not_escape_unicode_characters(): void
     {
@@ -33,6 +54,20 @@ class LoginTest extends TestCase
     public static function dataProviderForValidation(): array
     {
         return [
+            '"as" parameter should exist in system' => [[
+                LoginRequest::EMAIL => 'user@example.com',
+                LoginRequest::PASSWORD => 'invalid-password',
+                LoginRequest::AS => 'manager',
+                'createUser' => true,
+                'createRole' => true,
+            ]],
+            '"as" parameter should be string' => [[
+                LoginRequest::EMAIL => 'user@example.com',
+                LoginRequest::PASSWORD => 'invalid-password',
+                LoginRequest::AS => ['manager'],
+                'createUser' => true,
+                'createRole' => true,
+            ]],
             'credentials should be correct' => [[
                 LoginRequest::EMAIL => 'user@example.com',
                 LoginRequest::PASSWORD => 'invalid-password',
@@ -59,11 +94,14 @@ class LoginTest extends TestCase
     #[DataProvider('dataProviderForValidation')]
     public function test_it_should_pass_validation(array $data): void
     {
-        key_exists('createUser', $data) ?
-            createUser(fields: [
-                LoginRequest::EMAIL => $data[LoginRequest::EMAIL],
-            ]) :
-            createUser();
+        key_exists('createUser', $data) ? createUser(fields: [
+            User::EMAIL => $data[LoginRequest::EMAIL],
+        ]) : createUser();
+        key_exists('createRole', $data) ? createRole(fields: [
+            Role::SLUG => is_array(
+                $as = $data[LoginRequest::AS]
+            ) ? $as[0] : $as,
+        ]) : null;
 
         $response = $this->request(...$data);
 
