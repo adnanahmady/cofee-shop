@@ -6,23 +6,28 @@ use App\Traits\Models\HasPriceAndCurrencyTrait;
 use App\Traits\Models\HasPriceObjectPropertyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Product extends Model
+class OrderItem extends Model
 {
     use HasFactory;
     use HasPriceAndCurrencyTrait;
     use HasPriceObjectPropertyTrait;
 
-    public const TABLE = 'products';
+    public const TABLE = 'order_items';
     public const ID = 'id';
-    public const NAME = 'name';
+    public const PRODUCT = 'product_id';
+    public const ORDER = 'order_id';
+    public const AMOUNT = 'amount';
     public const PRICE = 'price';
-    public const CURRENCY = 'currency_id';
+    public const CURRENCY = 'currency';
 
     protected $table = self::TABLE;
 
     protected $fillable = [
-        self::NAME,
+        self::PRODUCT,
+        self::ORDER,
+        self::AMOUNT,
         self::PRICE,
         self::CURRENCY,
     ];
@@ -42,13 +47,23 @@ class Product extends Model
         return $this->{self::ID};
     }
 
-    public function getName(): string
+    public function getProductId(): int
     {
-        return $this->{self::NAME};
+        return $this->{self::PRODUCT};
     }
 
-    public function setName(string $name): void
+    public function getOrderId(): int
     {
-        $this->{self::NAME} = $name;
+        return $this->{self::ORDER};
+    }
+
+    public function getAmount(): int
+    {
+        return $this->{self::AMOUNT};
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
     }
 }

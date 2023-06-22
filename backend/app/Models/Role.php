@@ -43,6 +43,6 @@ class Role extends Model
         return $this->belongsToMany(
             Ability::class,
             RoleAbilityContract::TABLE
-        );
+        )->withTimestamps();
     }
 }

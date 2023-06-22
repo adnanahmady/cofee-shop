@@ -1,19 +1,25 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Products\Store;
+namespace App\Http\Resources\Api\V1\Orders\List;
 
-use App\Models\Product;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductResource extends JsonResource
+class OrderItemResource extends JsonResource
 {
     public const ID = 'id';
-    public const NAME = 'name';
+    public const NAME = 'product_name';
+    public const AMOUNT = 'amount';
     public const PRICE = 'price';
 
-    /** @var Product */
+    /** @var OrderItem */
     public $resource;
+
+    public function __construct($resource)
+    {
+        parent::__construct($resource);
+    }
 
     /**
      * Transform the resource into an array.
@@ -24,7 +30,8 @@ class ProductResource extends JsonResource
     {
         return [
             self::ID => $this->resource->getId(),
-            self::NAME => $this->resource->getName(),
+            self::NAME => $this->resource->product->getName(),
+            self::AMOUNT => $this->resource->getAmount(),
             self::PRICE => $this->resource->getPriceObject()->represent(),
         ];
     }

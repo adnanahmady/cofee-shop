@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Product;
-use App\ValueObjects\Products\PriceInterface;
+use App\ValueObjects\Shared\PriceInterface;
 
 class ProductRepository
 {

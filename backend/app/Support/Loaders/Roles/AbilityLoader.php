@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Loaders\Roles;
+namespace App\Support\Loaders\Roles;
 
 use App\Models\Role;
 use App\Repositories\RoleRepository;

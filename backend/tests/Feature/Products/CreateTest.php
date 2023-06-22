@@ -7,7 +7,7 @@ use App\Http\Requests\Api\V1\Products\StoreRequest;
 use App\Http\Resources\Api\V1\Products\Store;
 use App\Models\Ability;
 use App\Models\User;
-use App\ValueObjects\Products\PriceObject;
+use App\ValueObjects\Shared\PriceObject;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -154,7 +154,7 @@ class CreateTest extends TestCase
         $this->assertIsString($data[Store\ProductResource::NAME]);
         $this->assertIsString($data[Store\ProductResource::PRICE]);
         $this->assertSame(
-            $priceObject->getFullForm(),
+            $priceObject->represent(),
             $data[Store\ProductResource::PRICE]
         );
     }

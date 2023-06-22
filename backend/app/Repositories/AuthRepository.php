@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\ExceptionMessages\InvalidEmailMessage;
 use App\Exceptions\InvalidCredentialException;
-use App\Loaders\Roles\AbilityLoaderInterface;
 use App\Models\User;
+use App\Support\Loaders\Roles\AbilityLoaderInterface;
 use App\ValueObjects\Users\NameInterface;
 use Illuminate\Support\Facades\Hash;
 

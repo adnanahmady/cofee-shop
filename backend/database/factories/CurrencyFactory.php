@@ -20,6 +20,7 @@ class CurrencyFactory extends Factory
         return [
             Currency::NAME => fake()->name(),
             Currency::CODE => fake()->currencyCode(),
+            Currency::DECIMAL_PLACES => fake()->numberBetween(0, 5),
         ];
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Requests\Api\V1\Products;
 
 use App\Http\Requests\Api\V1\AbstractRequest;
 use App\Models\Currency;
-use App\ValueObjects\Products\PriceInterface;
-use App\ValueObjects\Products\PriceObject;
+use App\ValueObjects\Shared\PriceInterface;
+use App\ValueObjects\Shared\PriceObject;
 
 class StoreRequest extends AbstractRequest
 {

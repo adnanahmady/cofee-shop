@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +19,9 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
+            Product::CURRENCY => Currency::factory(),
+            Product::NAME => fake()->name(),
+            Product::PRICE => fake()->randomNumber(),
         ];
     }
 }
