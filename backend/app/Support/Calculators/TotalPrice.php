@@ -41,7 +41,7 @@ class TotalPrice implements TotalPriceInterface
         return $this->currency ?? $this->price->getCurrency();
     }
 
-    public function getFormedPrice(): string|int
+    public function represent(): string|int
     {
         return $this->price?->represent() ?? 0;
     }

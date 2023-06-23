@@ -57,7 +57,7 @@ class TotalPriceTest extends TestCase
                 $eur->getCode(),
                 round($totalPrice->getPrice(), $eur->getDecimalPlaces())
             ),
-            $totalPrice->getFormedPrice()
+            $totalPrice->represent()
         );
     }
 

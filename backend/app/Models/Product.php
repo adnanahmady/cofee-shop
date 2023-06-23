@@ -16,6 +16,7 @@ class Product extends Model
     public const TABLE = 'products';
     public const ID = 'id';
     public const NAME = 'name';
+    public const AMOUNT = 'amount';
     public const PRICE = 'price';
     public const CURRENCY = 'currency_id';
 
@@ -23,6 +24,7 @@ class Product extends Model
 
     protected $fillable = [
         self::NAME,
+        self::AMOUNT,
         self::PRICE,
         self::CURRENCY,
     ];
@@ -50,5 +52,15 @@ class Product extends Model
     public function setName(string $name): void
     {
         $this->{self::NAME} = $name;
+    }
+
+    public function getAmount(): int
+    {
+        return $this->{self::AMOUNT};
+    }
+
+    public function setAmount(int $amount): void
+    {
+        $this->{self::AMOUNT} = $amount;
     }
 }

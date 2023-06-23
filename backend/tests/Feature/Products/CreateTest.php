@@ -40,6 +40,7 @@ class CreateTest extends TestCase
         $data = [
             StoreRequest::NAME => $name = 'تلویزیون',
             StoreRequest::PRICE => 345345,
+            StoreRequest::AMOUNT => 10,
             StoreRequest::CURRENCY => createCurrency()->getId(),
         ];
 
@@ -51,40 +52,60 @@ class CreateTest extends TestCase
     public static function dataProviderForValidation(): array
     {
         return [
+            'amount should be integer' => [[
+                StoreRequest::NAME => 'tv',
+                StoreRequest::PRICE => 345345,
+                StoreRequest::AMOUNT => 'a',
+                StoreRequest::CURRENCY => 1,
+                'createCurrency' => true,
+            ]],
+            'amount of the product is required' => [[
+                StoreRequest::NAME => 'tv',
+                StoreRequest::PRICE => 345345,
+                StoreRequest::CURRENCY => 1,
+                'createCurrency' => true,
+            ]],
             'name should be at least 2 characters' => [[
                 StoreRequest::NAME => 't',
                 StoreRequest::PRICE => 345345,
+                StoreRequest::AMOUNT => 300,
                 StoreRequest::CURRENCY => 1,
                 'createCurrency' => true,
             ]],
             'price should be integer' => [[
                 StoreRequest::NAME => 'tv',
                 StoreRequest::PRICE => '435-3453',
+                StoreRequest::AMOUNT => 300,
                 StoreRequest::CURRENCY => 1,
                 'createCurrency' => true,
             ]],
             'currency should exist in system' => [[
                 StoreRequest::NAME => 'tv',
                 StoreRequest::PRICE => 993443,
+                StoreRequest::AMOUNT => 300,
                 StoreRequest::CURRENCY => 1,
             ]],
             'currency should be integer' => [[
                 StoreRequest::NAME => 'tv',
                 StoreRequest::PRICE => 993443,
+                StoreRequest::AMOUNT => 300,
                 StoreRequest::CURRENCY => 'some',
             ]],
             'currency is required' => [[
                 StoreRequest::NAME => 'tv',
+                StoreRequest::AMOUNT => 300,
                 StoreRequest::PRICE => 993443,
             ]],
             'price is required' => [[
                 StoreRequest::NAME => 'tv',
                 StoreRequest::CURRENCY => 1,
+                StoreRequest::AMOUNT => 300,
                 'createCurrency' => true,
             ]],
             'name is required' => [[
                 StoreRequest::PRICE => 993443,
                 StoreRequest::CURRENCY => 1,
+                StoreRequest::AMOUNT => 300,
                 'createCurrency' => true,
             ]],
         ];
@@ -111,6 +132,7 @@ class CreateTest extends TestCase
         $priceObject = new PriceObject(100033, createCurrency()->getId());
         $data = [
             StoreRequest::NAME => 'clock',
+            StoreRequest::AMOUNT => 30,
             StoreRequest::PRICE => $priceObject->getPrice(),
             StoreRequest::CURRENCY => $priceObject->getCurrency()->getId(),
         ];
@@ -137,6 +159,7 @@ class CreateTest extends TestCase
         $priceObject = new PriceObject(100033, createCurrency()->getId());
         $data = [
             StoreRequest::NAME => 'clock',
+            StoreRequest::AMOUNT => 30,
             StoreRequest::PRICE => $priceObject->getPrice(),
             StoreRequest::CURRENCY => $priceObject->getCurrency()->getId(),
         ];
@@ -148,9 +171,11 @@ class CreateTest extends TestCase
         $this->assertArrayHasKeys([
             Store\ProductResource::ID,
             Store\ProductResource::NAME,
+            Store\ProductResource::AMOUNT,
             Store\ProductResource::PRICE,
         ], $data);
         $this->assertIsInt($data[Store\ProductResource::ID]);
+        $this->assertIsInt($data[Store\ProductResource::AMOUNT]);
         $this->assertIsString($data[Store\ProductResource::NAME]);
         $this->assertIsString($data[Store\ProductResource::PRICE]);
         $this->assertSame(
@@ -164,6 +189,7 @@ class CreateTest extends TestCase
         $this->login();
         $data = [
             StoreRequest::NAME => 'clock',
+            StoreRequest::AMOUNT => 30,
             StoreRequest::PRICE => 1000,
             StoreRequest::CURRENCY => createCurrency()->getId(),
         ];

@@ -20,6 +20,7 @@ class ProductFactory extends Factory
     {
         return [
             Product::CURRENCY => Currency::factory(),
+            Product::AMOUNT => fake()->randomNumber(),
             Product::NAME => fake()->name(),
             Product::PRICE => fake()->randomNumber(),
         ];

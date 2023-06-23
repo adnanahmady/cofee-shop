@@ -15,13 +15,10 @@ return new class () extends Migration {
         Schema::create(Product::TABLE, function (Blueprint $table): void {
             $table->id(Product::ID);
             $table->string(Product::NAME);
+            $table->unsignedBigInteger(Product::AMOUNT);
             $table->unsignedBigInteger(Product::PRICE);
-            $table->unsignedBigInteger(Product::CURRENCY);
+            $table->foreignIdFor(Currency::class, Product::CURRENCY);
             $table->timestamps();
-
-            $table->foreign([Product::CURRENCY])
-                ->references([Currency::ID])
-                ->on(Currency::TABLE);
         });
     }
 
@@ -31,7 +28,7 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table(Product::TABLE, function (Blueprint $table): void {
-            $table->dropForeign([Product::CURRENCY]);
+            $table->dropForeignIdFor(Currency::class, Product::CURRENCY);
         });
         Schema::dropIfExists(Product::TABLE);
     }

@@ -15,6 +15,7 @@ class ProductController extends Controller
     ): Store\StoredResource {
         $product = $productRepository->create(
             $request->getName(),
+            $request->getAmount(),
             $request->getPriceObject()
         );
 

@@ -15,7 +15,7 @@ interface TotalPriceInterface
 
     public function getCurrency(): Currency;
 
-    public function getFormedPrice(): string|int;
+    public function represent(): string|int;
 
     public function __toString(): string;
 }

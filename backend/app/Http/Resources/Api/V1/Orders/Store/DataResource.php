@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Orders\List;
+namespace App\Http\Resources\Api\V1\Orders\Store;
 
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -10,23 +10,21 @@ use App\Support\Calculators\TotalPriceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderResource extends JsonResource
+class DataResource extends JsonResource
 {
-    public const ID = 'id';
+    public const ORDER_ID = 'order_id';
     public const ITEMS = 'items';
-    public const ORDERED_AT = 'ordered_at';
-    public const UPDATED_AT = 'updated_at';
     public const TOTAL_PRICE = 'total_price';
 
     /** @var Order */
     public $resource;
-    private OrderRepository $repository;
+    private OrderRepository $orderRepository;
     private TotalPriceInterface $totalPrice;
 
     public function __construct($resource)
     {
         parent::__construct($resource);
-        $this->repository = new OrderRepository();
+        $this->orderRepository = new OrderRepository();
         $this->totalPrice = new TotalPrice();
     }
 
@@ -38,20 +36,18 @@ class OrderResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            self::ID => $this->resource->getId(),
-            self::ITEMS => $this->repository->getItems($this->resource)
-                ->map(function (OrderItem $oi) {
+            self::ORDER_ID => $this->resource->getId(),
+            self::ITEMS => $this->orderRepository->getItems($this->resource)
+                ->map(function (OrderItem $item) {
                     $this->totalPrice->addPrices(
-                        $oi->getPriceObject(),
-                        $oi->getAmount()
+                        $item->getPriceObject(),
+                        $item->getAmount()
                     );
 
-                    return $oi;
+                    return $item;
                 })
-                ->map(fn (OrderItem $oi) => new OrderItemResource($oi)),
+                ->map(fn ($item) => new ItemResource($item)),
             self::TOTAL_PRICE => $this->totalPrice->represent(),
-            self::ORDERED_AT => $this->resource->getCreatedAt(),
-            self::UPDATED_AT => $this->resource->getUpdatedAt(),
         ];
     }
 }

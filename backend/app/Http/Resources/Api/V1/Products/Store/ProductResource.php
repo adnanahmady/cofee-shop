@@ -10,6 +10,7 @@ class ProductResource extends JsonResource
 {
     public const ID = 'id';
     public const NAME = 'name';
+    public const AMOUNT = 'amount';
     public const PRICE = 'price';
 
     /** @var Product */
@@ -25,6 +26,7 @@ class ProductResource extends JsonResource
         return [
             self::ID => $this->resource->getId(),
             self::NAME => $this->resource->getName(),
+            self::AMOUNT => $this->resource->getAmount(),
             self::PRICE => $this->resource->getPriceObject()->represent(),
         ];
     }

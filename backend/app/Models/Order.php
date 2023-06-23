@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Order extends Model
 {
@@ -16,6 +17,10 @@ class Order extends Model
 
     protected $table = self::TABLE;
 
+    protected $fillable = [
+        self::USER,
+    ];
+
     public function getId(): int
     {
         return $this->{self::ID};
@@ -24,6 +29,11 @@ class Order extends Model
     public function getUserId(): int
     {
         return $this->{self::USER};
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->{self::USER} = $user->getId();
     }
 
     public function getCreatedAt(): string
@@ -39,5 +49,10 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function itemProduct(): HasOneThrough
+    {
+        return $this->hasOneThrough(Product::class, OrderItem::class);
     }
 }

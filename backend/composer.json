@@ -38,7 +38,7 @@
     },
     "scripts": {
         "test": [
-            "XDEBUG_MODE=trace phpunit --stop-on-error --stop-on-defect --colors=always"
+            "XDEBUG_MODE=trace phpunit --stop-on-error --stop-on-defect --stop-on-deprecation  --colors=always"
         ],
         "fix": [
             "php-cs-fixer --verbose --diff fix $(pwd)"
