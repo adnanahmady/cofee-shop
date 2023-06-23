@@ -62,6 +62,11 @@ class OrderItem extends Model
         return $this->{self::AMOUNT};
     }
 
+    public function setAmount(int $amount): void
+    {
+        $this->{self::AMOUNT} = $amount;
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

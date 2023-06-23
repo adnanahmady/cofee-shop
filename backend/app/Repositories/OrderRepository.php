@@ -63,7 +63,7 @@ class OrderRepository
         Product $product,
         int $amount
     ): void {
-        $this->productRepository->orderAmount($product, $amount);
+        $this->productRepository->orderProduct($product, $amount);
         $price = $product->getPriceObject();
         $order->items()->create([
             OrderItem::PRODUCT => $product->getId(),

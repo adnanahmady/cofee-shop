@@ -28,16 +28,17 @@ class ProductRepository
         return Product::findOrFail($productId);
     }
 
-    public function orderAmount(Product $product, int $amount): bool
+    public function orderProduct(Product $product, int $amount): Product
     {
         $remains = $product->getAmount() - $amount;
-        $result = $product->update([Product::AMOUNT => $remains]);
+        $product->update([Product::AMOUNT => $remains]);
+        $product = $product->fresh();
 
         InvalidOrderItemAmountException::throwIf(
-            $product->fresh()->getAmount() < 0,
+            $product->getAmount() < 0,
             new InvalidOrderItemAmountMessage($product)
         );
 
-        return $result;
+        return $product;
     }
 }

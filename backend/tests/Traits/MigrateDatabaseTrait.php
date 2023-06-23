@@ -16,8 +16,8 @@ trait MigrateDatabaseTrait
     /**
      * Closes the database connection after the test is done.
      * If the database connection remain open for each test
-     * after a while the tests may reach the database make
-     * connection numbers. therefore it's important to close
+     * after a while the tests may reach the database maximum
+     * connection number. therefore it's important to close
      * the database connection after each test is done.
      */
     protected function migrateDatabaseTearDown(): void

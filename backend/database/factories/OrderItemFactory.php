@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Currency;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,6 +22,7 @@ class OrderItemFactory extends Factory
     {
         return [
             OrderItem::CURRENCY => Currency::factory(),
+            OrderItem::ORDER => Order::factory(),
             OrderItem::PRICE => fake()->randomNumber(),
             OrderItem::PRODUCT => Product::factory(),
             OrderItem::AMOUNT => fake()->numberBetween(0, 5000),

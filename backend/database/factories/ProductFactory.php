@@ -20,7 +20,7 @@ class ProductFactory extends Factory
     {
         return [
             Product::CURRENCY => Currency::factory(),
-            Product::AMOUNT => fake()->randomNumber(),
+            Product::AMOUNT => fake()->numberBetween(5, 20),
             Product::NAME => fake()->name(),
             Product::PRICE => fake()->randomNumber(),
         ];
