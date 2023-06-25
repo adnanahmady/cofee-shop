@@ -7,15 +7,15 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class GetListTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
     use LetsBeTrait;
 
     private UserRepository $userRepository;

@@ -8,15 +8,15 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Repositories\ProductRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class UpdateTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
     use LetsBeTrait;
 
     public function test_order_item_can_only_be_integer(): void

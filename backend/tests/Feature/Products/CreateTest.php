@@ -8,15 +8,15 @@ use App\Http\Resources\Api\V1\Products\Store;
 use App\Models\Ability;
 use App\Models\User;
 use App\ValueObjects\Shared\PriceObject;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class CreateTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
     use LetsBeTrait;
 
     public function test_only_managers_should_be_able_to_add_products(): void

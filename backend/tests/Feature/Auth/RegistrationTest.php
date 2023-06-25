@@ -5,14 +5,14 @@ namespace Tests\Feature\Auth;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Resources\Api\V1\Auth\Register;
 use App\ValueObjects\Users\NameObject;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class RegistrationTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
 
     public function test_response_should_not_escape_unicode_characters(): void
     {

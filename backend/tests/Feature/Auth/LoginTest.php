@@ -6,14 +6,14 @@ use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Resources\Api\V1\Auth\Login;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class LoginTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
 
     public function test_user_can_login_with_different_roles(): void
     {

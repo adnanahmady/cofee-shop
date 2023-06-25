@@ -3,12 +3,12 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Currency;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class CurrencyTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
 
     public function test_it_should_show_default_instead_of_null_value(): void
     {

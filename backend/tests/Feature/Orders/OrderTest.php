@@ -8,15 +8,15 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class OrderTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
     use LetsBeTrait;
 
     public function test_data_item_should_be_in_expected_form(): void
@@ -133,7 +133,7 @@ class OrderTest extends TestCase
         $this->assertCount(1, $response->json('errors'));
     }
 
-    public function test_when_ordered_items_are_more_than_product_amount_you_should_not_be_able_to_purchase(): void
+    public function test_when_ordered_items_are_more_than_product_amount_user_can_not_purchase(): void
     {
         $this->login();
         $newPId = fn () => createProduct([Product::AMOUNT => 5])->getId();
@@ -165,12 +165,12 @@ class OrderTest extends TestCase
             ],
         ]];
 
-        $orderId = $this->request($data)->json(join('.', [
-            Store\PaginatorResource::DATA,
-            Store\DataResource::ORDER_ID,
-        ]));
+        $data = $this->request($data)->json(Store\PaginatorResource::DATA);
 
-        $this->assertOrderItemHas([[1, $orderId, $p1, $amount]]);
+        $orderId = $data[Store\DataResource::ORDER_ID];
+        $this->assertOrderItemHas([
+            [$this->getItemId($data, 0), $orderId, $p1, $amount],
+        ]);
         $this->assertDatabaseHas(Product::TABLE, [
             Product::ID => $p1,
             Product::AMOUNT => 7,
@@ -191,15 +191,13 @@ class OrderTest extends TestCase
             [StoreRequest::PRODUCT_ID => $p3 = $newPId()],
         ]];
 
-        $orderId = $this->request($data)->json(join('.', [
-            Store\PaginatorResource::DATA,
-            Store\DataResource::ORDER_ID,
-        ]));
+        $data = $this->request($data)->json(Store\PaginatorResource::DATA);
 
+        $orderId = $data[Store\DataResource::ORDER_ID];
         $this->assertOrderItemHas([
-            [1, $orderId, $p1, $amount],
-            [2, $orderId, $p2, 1],
-            [3, $orderId, $p3, 1],
+            [$this->getItemId($data, 0), $orderId, $p1, $amount],
+            [$this->getItemId($data, 1), $orderId, $p2, 1],
+            [$this->getItemId($data, 2), $orderId, $p3, 1],
         ]);
     }
 
@@ -214,20 +212,26 @@ class OrderTest extends TestCase
             [StoreRequest::PRODUCT_ID => $p3 = $newPId()],
         ]];
 
-        $orderId = $this->request($data)->json(join('.', [
-            Store\PaginatorResource::DATA,
-            Store\DataResource::ORDER_ID,
-        ]));
+        $data = $this->request($data)->json(Store\PaginatorResource::DATA);
 
+        $orderId = $data[Store\DataResource::ORDER_ID];
         $this->assertDatabaseHas(Order::TABLE, [
-            Order::ID => 1,
+            Order::ID => $orderId,
             Order::USER => $user->getId(),
         ]);
         $this->assertOrderItemHas([
-            [1, $orderId, $p1],
-            [2, $orderId, $p2],
-            [3, $orderId, $p3],
+            [$this->getItemId($data, 0), $orderId, $p1],
+            [$this->getItemId($data, 1), $orderId, $p2],
+            [$this->getItemId($data, 2), $orderId, $p3],
         ]);
+    }
+
+    private function getItemId(array $data, int $index): int
+    {
+        $itemsKey = Store\DataResource::ITEMS;
+        $itemIdKey = Store\ItemResource::ITEM_ID;
+
+        return $data[$itemsKey][$index][$itemIdKey];
     }
 
     private function assertOrderItemHas(array $orderItems): void

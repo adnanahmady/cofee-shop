@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Auth;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use Tests\Traits\MigrateDatabaseTrait;
 use App\Http\Resources\Api\V1\Auth\Logout;
 
 class LogoutTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
     use LetsBeTrait;
 
     public function test_response_data_should_be_in_expected_form(): void

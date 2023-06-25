@@ -5,12 +5,12 @@ namespace Tests\Unit\Models;
 use App\Exceptions\Models\UnavailableRelationException;
 use App\Models\Currency;
 use App\Models\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Tests\Traits\MigrateDatabaseTrait;
 
 class ProductTest extends TestCase
 {
-    use MigrateDatabaseTrait;
+    use RefreshDatabase;
 
     public function test_it_should_throw_exception_if_currency_is_not_being_set(): void
     {
