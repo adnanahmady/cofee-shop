@@ -10,6 +10,18 @@ performs ordering process.
   * [Run the application](#run-application)
 * [Tests](#tests)
 
+## Structure
+
+The project structure is as bellow
+
+- .assets `The assets of the readme file are placed here`
+- .web `The nginx configurations are placed here`
+- .backend `The backend application configurations are placed here`
+- [backend](backend) `The backend application itself is placed here`
+- .gitignore `The assets that should be ignored by git`
+- docker-compose.yml `docker compose configuration`
+- Makefile `This file is here to help working with the project`
+
 ## Requirements
 
 You need `docker` and `docker-compose` in order to run this application.
