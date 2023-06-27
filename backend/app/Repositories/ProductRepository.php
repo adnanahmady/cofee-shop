@@ -6,9 +6,15 @@ use App\ExceptionMessages\InvalidOrderItemAmountMessage;
 use App\Exceptions\Models\InvalidOrderItemAmountException;
 use App\Models\Product;
 use App\ValueObjects\Shared\PriceInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProductRepository
 {
+    public function getAvailable(): Collection
+    {
+        return Product::where(Product::AMOUNT, '>', 0)->get();
+    }
+
     public function create(
         string $name,
         int $amount,
