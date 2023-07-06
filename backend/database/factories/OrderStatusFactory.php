@@ -2,15 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Order;
 use App\Models\OrderStatus;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
  */
-class OrderFactory extends Factory
+class OrderStatusFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,8 +18,7 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            Order::USER => User::factory(),
-            Order::STATUS => OrderStatus::factory(),
+            OrderStatus::NAME => fake()->name(),
         ];
     }
 }

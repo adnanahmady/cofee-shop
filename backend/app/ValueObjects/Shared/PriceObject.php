@@ -7,10 +7,10 @@ use App\Support\Exchangers\PriceExchanger;
 
 class PriceObject implements PriceInterface
 {
-    private Currency $currency;
+    private readonly Currency $currency;
 
     public function __construct(
-        readonly private int|float $price,
+        private readonly int|float $price,
         Currency|int $currency
     ) {
         $this->currency = is_int($currency) ?
@@ -55,10 +55,8 @@ class PriceObject implements PriceInterface
 
     public function isEqual($price): bool
     {
-        return
-            $this->getPrice() === $price->getPrice()
-            && $this->isInSameCurrency($price)
-        ;
+        return $this->getPrice() === $price->getPrice()
+            && $this->isInSameCurrency($price);
     }
 
     public function sum(PriceInterface $price): PriceInterface

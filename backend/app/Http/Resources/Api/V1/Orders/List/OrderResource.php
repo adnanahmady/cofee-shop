@@ -17,6 +17,7 @@ class OrderResource extends JsonResource
     public const ORDERED_AT = 'ordered_at';
     public const UPDATED_AT = 'updated_at';
     public const TOTAL_PRICE = 'total_price';
+    public const STATUS = 'status';
 
     /** @var Order */
     public $resource;
@@ -50,6 +51,9 @@ class OrderResource extends JsonResource
                 })
                 ->map(fn (OrderItem $oi) => new OrderItemResource($oi)),
             self::TOTAL_PRICE => $this->totalPrice->represent(),
+            self::STATUS => new StatusResource(
+                $this->repository->getStatus($this->resource)
+            ),
             self::ORDERED_AT => $this->resource->getCreatedAt(),
             self::UPDATED_AT => $this->resource->getUpdatedAt(),
         ];

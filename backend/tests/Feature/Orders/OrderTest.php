@@ -6,8 +6,10 @@ use App\Http\Requests\Api\V1\Orders\StoreRequest;
 use App\Http\Resources\Api\V1\Orders\Store;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\Values\OrderStatuses\WaitingValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -21,17 +23,8 @@ class OrderTest extends TestCase
 
     public function test_data_item_should_be_in_expected_form(): void
     {
-        $this->login();
-        $newPId = fn () => createProduct([Product::AMOUNT => 10])->getId();
-        $item = fn ($id, $amount = 1) => [
-            StoreRequest::PRODUCT_ID => $id,
-            StoreRequest::AMOUNT => $amount,
-        ];
-        $data = [StoreRequest::PRODUCTS => [
-            $item($newPId()),
-            $item($newPId(), 3),
-            $item($newPId(), 2),
-        ]];
+        $this->withoutExceptionHandling();
+        $data = $this->getData();
 
         $items = $this->request($data)->json(join('.', [
             Store\PaginatorResource::DATA,
@@ -48,19 +41,32 @@ class OrderTest extends TestCase
         ], $items[1]);
     }
 
+    public function test_status_should_only_show_the_expected_fields(): void
+    {
+        $status = $this->getData();
+
+        $status = $this->request($status)->json(join('.', [
+            Store\PaginatorResource::DATA,
+            Store\DataResource::STATUS,
+        ]));
+
+        $this->assertArrayHasKeys([
+            Store\StatusResource::ID,
+            Store\StatusResource::NAME,
+        ], $status);
+        $this->assertSame(
+            (string) new WaitingValue(),
+            $status[Store\StatusResource::NAME]
+        );
+        $this->assertArrayNotHasKeys([
+            OrderStatus::CREATED_AT,
+            OrderStatus::UPDATED_AT,
+        ], $status);
+    }
+
     public function test_response_should_be_in_expected_form(): void
     {
-        $this->login();
-        $newPId = fn () => createProduct([Product::AMOUNT => 10])->getId();
-        $item = fn ($id, $amount = 1) => [
-            StoreRequest::PRODUCT_ID => $id,
-            StoreRequest::AMOUNT => $amount,
-        ];
-        $data = [StoreRequest::PRODUCTS => [
-            $item($newPId()),
-            $item($newPId(), 3),
-            $item($newPId(), 2),
-        ]];
+        $data = $this->getData();
 
         $data = $this->request($data)->json(
             Store\PaginatorResource::DATA
@@ -70,7 +76,24 @@ class OrderTest extends TestCase
             Store\DataResource::ORDER_ID,
             Store\DataResource::ITEMS,
             Store\DataResource::TOTAL_PRICE,
+            Store\DataResource::STATUS,
         ], $data);
+    }
+
+    private function getData(): array
+    {
+        $this->login();
+        $newPId = fn () => createProduct([Product::AMOUNT => 10])->getId();
+        $item = fn ($id, $amount = 1) => [
+            StoreRequest::PRODUCT_ID => $id,
+            StoreRequest::AMOUNT => $amount,
+        ];
+
+        return [StoreRequest::PRODUCTS => [
+            $item($newPId()),
+            $item($newPId(), 3),
+            $item($newPId(), 2),
+        ]];
     }
 
     public static function dataProviderForValidationTest(): array

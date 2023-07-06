@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Contracts\OrderContract;
+use App\Interfaces\IdInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
@@ -15,6 +16,7 @@ class Order extends Model
     public const TABLE = 'orders';
     public const ID = 'id';
     public const USER = 'user_id';
+    public const STATUS = 'status_id';
 
     protected $table = self::TABLE;
 
@@ -39,6 +41,11 @@ class Order extends Model
         $this->{self::USER} = $user->getId();
     }
 
+    public function setStatus(IdInterface $status): void
+    {
+        $this->{self::STATUS} = $status->getId();
+    }
+
     public function getCreatedAt(): string
     {
         return $this->{self::CREATED_AT};
@@ -57,5 +64,14 @@ class Order extends Model
     public function itemProduct(): HasOneThrough
     {
         return $this->hasOneThrough(Product::class, OrderItem::class);
+    }
+
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(
+            OrderStatus::class,
+            self::STATUS,
+            OrderStatus::ID
+        );
     }
 }
