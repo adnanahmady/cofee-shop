@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\OrderContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,6 +17,8 @@ class Order extends Model
     public const USER = 'user_id';
 
     protected $table = self::TABLE;
+
+    protected $primaryKey = self::ID;
 
     protected $fillable = [
         self::USER,

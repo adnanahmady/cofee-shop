@@ -28,6 +28,8 @@ class User extends Authenticatable
 
     protected $table = self::TABLE;
 
+    protected $primaryKey = self::ID;
+
     /**
      * The attributes that are mass assignable.
      *

@@ -17,6 +17,8 @@ class Currency extends Model
 
     protected $table = self::TABLE;
 
+    protected $primaryKey = self::ID;
+
     protected $fillable = [
         self::NAME,
         self::CODE,

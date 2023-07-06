@@ -18,6 +18,8 @@ class Role extends Model
 
     protected $table = self::TABLE;
 
+    protected $primaryKey = self::ID;
+
     /**
      * The attributes that are mass assignable.
      *
