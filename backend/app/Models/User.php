@@ -3,7 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Contracts\RoleUserContract;
+use App\Contracts\Models\RoleUserContract;
 use App\ValueObjects\Users\NameInterface;
 use App\ValueObjects\Users\NameObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

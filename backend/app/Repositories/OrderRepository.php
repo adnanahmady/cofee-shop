@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Support\RequestMappers\Orders\DataMapperInterface;
 use App\Support\Values\OrderStatuses\WaitingValue;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,21 @@ class OrderRepository
     {
         $this->productRepository = new ProductRepository();
         $this->statusRepository = new OrderStatusRepository();
+    }
+
+    public function getPaginated(int $page, int $perPage): LengthAwarePaginator
+    {
+        return Order::query()->paginate(perPage: $perPage, page: $page);
+    }
+
+    public function getPaginatedForUser(
+        User $user,
+        int $page,
+        int $perPage
+    ): LengthAwarePaginator {
+        return Order::query()
+            ->where(Order::USER, $user->getId())
+            ->paginate(perPage: $perPage, page: $page);
     }
 
     public function getItems(Order $order): Collection

@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Api\V1\Orders\List;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PaginatorResource extends JsonResource
+class PaginatorCollection extends ResourceCollection
 {
     public const DATA = 'data';
 

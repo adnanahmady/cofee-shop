@@ -1,6 +1,6 @@
 <?php
 
-use App\Contracts\RoleAbilityContract;
+use App\Contracts\Models\RoleAbilityContract;
 use App\Models\Ability;
 use App\Models\Role;
 use Illuminate\Database\Migrations\Migration;

@@ -2,13 +2,17 @@
 
 namespace Tests\Feature\Orders;
 
+use App\Enums\AbilityEnum;
+use App\Http\Requests\Api\V1\Orders\GetListRequest;
 use App\Http\Resources\Api\V1\Orders\List;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use App\Support\Values\Pagination\PerPageValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
@@ -19,10 +23,117 @@ class GetListTest extends TestCase
 
     private UserRepository $userRepository;
 
-    protected function setUp(): void
+    public function test_default_value_for_page_should_be_expected(): void
     {
-        parent::setUp();
-        $this->userRepository = new UserRepository();
+        $this->withoutExceptionHandling();
+        createOrder(count: 5);
+        $this->login();
+
+        $response = $this->request(perPage: 2)->json();
+
+        $this->assertSame(
+            1,
+            $response['meta']['current_page']
+        );
+    }
+
+    public function test_default_value_for_per_page_should_be_expected(): void
+    {
+        $this->withoutExceptionHandling();
+        $perPageValue = new PerPageValue();
+        createOrder(count: 5);
+        $this->login();
+
+        $response = $this->request(page: 3)->json();
+
+        $this->assertSame(
+            $perPageValue->represent(),
+            $response['meta']['per_page']
+        );
+    }
+
+    public static function dataProviderForParameterValidationTest(): array
+    {
+        return [
+            'per page should be integer' => [['perPage' => 'a']],
+            'page should be integer' => [['page' => 'a']],
+        ];
+    }
+
+    #[DataProvider('dataProviderForParameterValidationTest')]
+    public function test_parameter_validation(array $params): void
+    {
+        createOrder(count: 3);
+        $manager = $this->loginAsManger();
+        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+
+        $response = $this->request(...$params);
+
+        $response->assertUnprocessable();
+        $this->assertCount(1, $response->json('errors'));
+    }
+
+    public function test_user_should_be_able_to_paginate(): void
+    {
+        $this->withoutExceptionHandling();
+        createOrder(count: 3);
+        $manager = $this->loginAsManger();
+        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+
+        $response = $this->request(page: 3, perPage: 2)->json();
+
+        $this->assertSame(3, $response['meta']['current_page']);
+        $this->assertSame(2, $response['meta']['per_page']);
+    }
+
+    public function test_paginated_response_should_contain_expected_fields(): void
+    {
+        $this->withoutExceptionHandling();
+        createOrder(count: 3);
+        $manager = $this->loginAsManger();
+        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+
+        $response = $this->request()->json();
+
+        $this->assertIsArray($response[List\PaginatorCollection::DATA]);
+        $this->assertIsArray($response['links']);
+        $this->assertIsArray($meta = $response['meta']);
+        $this->assertIsInt($meta['current_page']);
+        $this->assertIsInt($meta['from']);
+        $this->assertIsInt($meta['to']);
+        $this->assertIsInt($meta['total']);
+        $this->assertIsInt($meta['per_page']);
+    }
+
+    public function test_the_response_should_be_paginated(): void
+    {
+        $this->withoutExceptionHandling();
+        createOrder(count: 3);
+        $manager = $this->loginAsManger();
+        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+
+        $response = $this->request()->json();
+
+        $this->assertGreaterThan(1, count($response));
+    }
+
+    public function test_the_manager_can_see_the_list_or_all_orders_regardless_of_the_user(): void
+    {
+        $this->withoutExceptionHandling();
+        createOrder(count: 3);
+        $manager = $this->loginAsManger();
+        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+
+        $data = $this->request()->json(List\PaginatorCollection::DATA);
+
+        $this->assertCount(5, $data);
+    }
+
+    public function loginAsManger(): User
+    {
+        return $this->login(abilities: [
+            AbilityEnum::SetOrderStatus->slugify(),
+        ]);
     }
 
     public function test_order_item_should_have_expected_fields(): void
@@ -31,7 +142,7 @@ class GetListTest extends TestCase
         [$orderItems] = $this->setItemsOfOrders();
 
         $item = $this->request()->json(join('.', [
-            List\PaginatorResource::DATA,
+            List\PaginatorCollection::DATA,
             0,
             List\OrderResource::ITEMS,
             0,
@@ -53,7 +164,7 @@ class GetListTest extends TestCase
         [, $orders] = $this->setItemsOfOrders();
 
         $status = $this->request()->json(join('.', [
-            List\PaginatorResource::DATA,
+            List\PaginatorCollection::DATA,
             0,
             List\OrderResource::STATUS,
         ]));
@@ -77,7 +188,7 @@ class GetListTest extends TestCase
         $this->setItemsOfOrders();
 
         $data = $this->request()->json(join('.', [
-            List\PaginatorResource::DATA,
+            List\PaginatorCollection::DATA,
             0,
         ]));
 
@@ -111,7 +222,7 @@ class GetListTest extends TestCase
             $userOrders = createOrder(count: 2)
         );
 
-        $data = $this->request()->json(List\PaginatorResource::DATA);
+        $data = $this->request()->json(List\PaginatorCollection::DATA);
 
         $this->assertCount($userOrders->count(), $data);
     }
@@ -125,13 +236,25 @@ class GetListTest extends TestCase
         $response->assertOk();
     }
 
-    private function login(): User
+    private function login(array $abilities = []): User
     {
-        return $this->letsBe(createUser());
+        return $this->letsBe(createUser(), abilities: $abilities);
     }
 
-    private function request(): TestResponse
+    private function request(mixed $page = null, mixed $perPage = null): TestResponse
     {
-        return $this->getJson(route('api.v1.orders.index'));
+        return $this->getJson(route(
+            name: 'api.v1.orders.index',
+            parameters: [
+                GetListRequest::PAGE => $page,
+                GetListRequest::PER_PAGE => $perPage,
+            ]
+        ));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->userRepository = new UserRepository();
     }
 }

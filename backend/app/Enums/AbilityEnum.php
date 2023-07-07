@@ -5,6 +5,7 @@ namespace App\Enums;
 enum AbilityEnum: string
 {
     case AddProduct = 'Add product';
+    case SetOrderStatus = 'Set order status';
 
     public function slugify(): string
     {
