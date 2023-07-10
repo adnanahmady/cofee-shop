@@ -4,6 +4,7 @@ use App\Models\Ability;
 use App\Models\Currency;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
@@ -15,6 +16,21 @@ if (!function_exists('createProduct')) {
         int $count = null,
     ): Product|Collection {
         $factory = Product::factory();
+
+        if ($count) {
+            $factory = $factory->count($count);
+        }
+
+        return $factory->create($fields);
+    }
+}
+
+if (!function_exists('createOrderStatus')) {
+    function createOrderStatus(
+        array $fields = [],
+        int $count = null,
+    ): OrderStatus|Collection {
+        $factory = OrderStatus::factory();
 
         if ($count) {
             $factory = $factory->count($count);

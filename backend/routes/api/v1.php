@@ -10,4 +10,7 @@ Route::middleware('auth:api')->group(function (): void {
     Route::name('order-items.')->group(
         base_path('routes/api/v1/order-items.php')
     );
+    Route::name('order-statuses.')->group(
+        base_path('routes/api/v1/order-statuses.php')
+    );
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Orders\Store;
+namespace App\Http\Resources\Api\V1\Orders\Shared;
 
 use App\Models\OrderItem;
 use App\Repositories\OrderItemRepository;
@@ -35,8 +35,6 @@ class ItemResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $totalPrice = new TotalPrice();
-
         return [
             self::ITEM_ID => $this->resource->getId(),
             self::NAME => $this->orderItemRepository
@@ -44,7 +42,7 @@ class ItemResource extends JsonResource
             self::AMOUNT => $this->resource->getAmount(),
             self::UNIT_PRICE => $this->resource
                 ->getPriceObject()->represent(),
-            self::PRICE => $totalPrice->addPrices(
+            self::PRICE => $this->totalPrice->addPrices(
                 $this->resource->getPriceObject(),
                 $this->resource->getAmount()
             )->represent(),

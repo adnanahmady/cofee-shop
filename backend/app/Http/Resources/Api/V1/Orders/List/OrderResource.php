@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\V1\Orders\List;
 
+use App\Http\Resources\Api\V1\Orders\Shared\StatusResource;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Repositories\OrderRepository;

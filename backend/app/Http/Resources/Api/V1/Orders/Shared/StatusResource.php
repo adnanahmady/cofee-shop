@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Orders\List;
+namespace App\Http\Resources\Api\V1\Orders\Shared;
 
 use App\Models\OrderStatus;
 use Illuminate\Http\Request;

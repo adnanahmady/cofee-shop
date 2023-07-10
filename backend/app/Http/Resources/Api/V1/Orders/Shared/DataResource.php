@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Orders\Store;
+namespace App\Http\Resources\Api\V1\Orders\Shared;
 
 use App\Models\Order;
 use App\Models\OrderItem;

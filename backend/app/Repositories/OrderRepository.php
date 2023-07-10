@@ -8,8 +8,9 @@ use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\OrderStateDeterminer\Values\WaitingValue;
 use App\Support\RequestMappers\Orders\DataMapperInterface;
-use App\Support\Values\OrderStatuses\WaitingValue;
+use App\Support\Values\ValueInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,11 @@ class OrderRepository
     {
         $this->productRepository = new ProductRepository();
         $this->statusRepository = new OrderStatusRepository();
+    }
+
+    public function changeStatus(Order $order, OrderStatus $status): void
+    {
+        $order->status()->associate($status)->save();
     }
 
     public function getPaginated(int $page, int $perPage): LengthAwarePaginator
@@ -45,9 +51,14 @@ class OrderRepository
         return $order->items;
     }
 
-    public function getStatus(Order $order): OrderStatus
+    public function getStatus(Order $order): ?OrderStatus
     {
-        return $order->status;
+        return $order?->status;
+    }
+
+    public function hasSameStatus(Order $order, ValueInterface $status): bool
+    {
+        return $this->getStatus($order)->getName() === (string) $status;
     }
 
     public function orderProducts(

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Orders;
 
 use App\Exceptions\Models\InvalidOrderItemAmountException;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\OrderItems\UpdateRequest;
 use App\Http\Resources\Api\V1\OrderItems;
 use App\Models\OrderItem;
 use App\Repositories\OrderItemRepository;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
 class OrderItemController extends Controller

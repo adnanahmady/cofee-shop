@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Orders\Store;
+namespace App\Http\Resources\Api\V1\Orders\Updated;
 
+use App\Http\Resources\Api\V1\Orders\Shared\DataResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class PaginatorResource extends JsonResource
 {
@@ -22,9 +24,9 @@ class PaginatorResource extends JsonResource
         ];
     }
 
-    public function toResponse($request)
+    public function toResponse($request): JsonResponse
     {
         return parent::toResponse($request)
-            ->setStatusCode(Response::HTTP_CREATED);
+            ->setStatusCode(Response::HTTP_OK);
     }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature\Orders;
 use App\Enums\AbilityEnum;
 use App\Http\Requests\Api\V1\Orders\GetListRequest;
 use App\Http\Resources\Api\V1\Orders\List;
+use App\Http\Resources\Api\V1\Orders\Shared;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\User;
@@ -170,8 +171,8 @@ class GetListTest extends TestCase
         ]));
 
         $this->assertArrayHasKeys([
-            List\StatusResource::ID,
-            List\StatusResource::NAME,
+            Shared\StatusResource::ID,
+            Shared\StatusResource::NAME,
         ], $status);
         $this->assertArrayNotHasKeys([
             OrderStatus::CREATED_AT,
@@ -179,7 +180,7 @@ class GetListTest extends TestCase
         ], $status);
         $this->assertSame(
             $orders[0]->status->getName(),
-            $status[List\StatusResource::NAME]
+            $status[Shared\StatusResource::NAME]
         );
     }
 

@@ -3,18 +3,19 @@
 namespace Tests\Feature\Orders;
 
 use App\Http\Requests\Api\V1\Orders\StoreRequest;
-use App\Http\Resources\Api\V1\Orders\Store;
+use App\Http\Resources\Api\V1\Orders\Stored;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\User;
-use App\Support\Values\OrderStatuses\WaitingValue;
+use App\Support\OrderStateDeterminer\Values\WaitingValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
+use App\Http\Resources\Api\V1\Orders\Shared;
 
 class OrderTest extends TestCase
 {
@@ -27,17 +28,17 @@ class OrderTest extends TestCase
         $data = $this->getData();
 
         $items = $this->request($data)->json(join('.', [
-            Store\PaginatorResource::DATA,
-            Store\DataResource::ITEMS,
+            Stored\PaginatorResource::DATA,
+            Shared\DataResource::ITEMS,
         ]));
 
         $this->assertCount(3, $items);
         $this->assertArrayHasKeys([
-            Store\ItemResource::ITEM_ID,
-            Store\ItemResource::NAME,
-            Store\ItemResource::AMOUNT,
-            Store\ItemResource::UNIT_PRICE,
-            Store\ItemResource::PRICE,
+            Shared\ItemResource::ITEM_ID,
+            Shared\ItemResource::NAME,
+            Shared\ItemResource::AMOUNT,
+            Shared\ItemResource::UNIT_PRICE,
+            Shared\ItemResource::PRICE,
         ], $items[1]);
     }
 
@@ -46,17 +47,17 @@ class OrderTest extends TestCase
         $status = $this->getData();
 
         $status = $this->request($status)->json(join('.', [
-            Store\PaginatorResource::DATA,
-            Store\DataResource::STATUS,
+            Stored\PaginatorResource::DATA,
+            Shared\DataResource::STATUS,
         ]));
 
         $this->assertArrayHasKeys([
-            Store\StatusResource::ID,
-            Store\StatusResource::NAME,
+            Shared\StatusResource::ID,
+            Shared\StatusResource::NAME,
         ], $status);
         $this->assertSame(
             (string) new WaitingValue(),
-            $status[Store\StatusResource::NAME]
+            $status[Shared\StatusResource::NAME]
         );
         $this->assertArrayNotHasKeys([
             OrderStatus::CREATED_AT,
@@ -69,14 +70,14 @@ class OrderTest extends TestCase
         $data = $this->getData();
 
         $data = $this->request($data)->json(
-            Store\PaginatorResource::DATA
+            Stored\PaginatorResource::DATA
         );
 
         $this->assertArrayHasKeys([
-            Store\DataResource::ORDER_ID,
-            Store\DataResource::ITEMS,
-            Store\DataResource::TOTAL_PRICE,
-            Store\DataResource::STATUS,
+            Shared\DataResource::ORDER_ID,
+            Shared\DataResource::ITEMS,
+            Shared\DataResource::TOTAL_PRICE,
+            Shared\DataResource::STATUS,
         ], $data);
     }
 
@@ -188,9 +189,9 @@ class OrderTest extends TestCase
             ],
         ]];
 
-        $data = $this->request($data)->json(Store\PaginatorResource::DATA);
+        $data = $this->request($data)->json(Stored\PaginatorResource::DATA);
 
-        $orderId = $data[Store\DataResource::ORDER_ID];
+        $orderId = $data[Shared\DataResource::ORDER_ID];
         $this->assertOrderItemHas([
             [$this->getItemId($data, 0), $orderId, $p1, $amount],
         ]);
@@ -214,9 +215,9 @@ class OrderTest extends TestCase
             [StoreRequest::PRODUCT_ID => $p3 = $newPId()],
         ]];
 
-        $data = $this->request($data)->json(Store\PaginatorResource::DATA);
+        $data = $this->request($data)->json(Stored\PaginatorResource::DATA);
 
-        $orderId = $data[Store\DataResource::ORDER_ID];
+        $orderId = $data[Shared\DataResource::ORDER_ID];
         $this->assertOrderItemHas([
             [$this->getItemId($data, 0), $orderId, $p1, $amount],
             [$this->getItemId($data, 1), $orderId, $p2, 1],
@@ -235,9 +236,9 @@ class OrderTest extends TestCase
             [StoreRequest::PRODUCT_ID => $p3 = $newPId()],
         ]];
 
-        $data = $this->request($data)->json(Store\PaginatorResource::DATA);
+        $data = $this->request($data)->json(Stored\PaginatorResource::DATA);
 
-        $orderId = $data[Store\DataResource::ORDER_ID];
+        $orderId = $data[Shared\DataResource::ORDER_ID];
         $this->assertDatabaseHas(Order::TABLE, [
             Order::ID => $orderId,
             Order::USER => $user->getId(),
@@ -251,8 +252,8 @@ class OrderTest extends TestCase
 
     private function getItemId(array $data, int $index): int
     {
-        $itemsKey = Store\DataResource::ITEMS;
-        $itemIdKey = Store\ItemResource::ITEM_ID;
+        $itemsKey = Shared\DataResource::ITEMS;
+        $itemIdKey = Shared\ItemResource::ITEM_ID;
 
         return $data[$itemsKey][$index][$itemIdKey];
     }
