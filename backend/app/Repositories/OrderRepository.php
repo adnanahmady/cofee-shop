@@ -26,6 +26,11 @@ class OrderRepository
         $this->statusRepository = new OrderStatusRepository();
     }
 
+    public function getCustomer(Order $order): User
+    {
+        return $order->user;
+    }
+
     public function changeStatus(Order $order, OrderStatus $status): void
     {
         $order->status()->associate($status)->save();

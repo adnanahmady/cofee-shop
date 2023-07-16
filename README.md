@@ -6,9 +6,12 @@ performs ordering process.
 ## Index
 
 * [Requirements](#requirements)
+* [Structure](#structure)
 * [Usage](#usage)
   * [Run the application](#run-application)
 * [Tests](#tests)
+* [Telescope](#telescope)
+* [Background Jobs](#background-jobs)
 
 ## Structure
 
@@ -50,6 +53,18 @@ bellow command.
 ```shell
 make test
 ```
+
+# Telescope
+
+The telescope is added to the project so you can see the notification for changed order status
+is being processed and send to the user in the system which in this case all mails are **Logged**
+instead of being truly send to anyone.
+
+# Background Jobs
+
+For handling queues the laravel built-in tool called `queue` is being used and after the backend
+container did run, an execution command is triggered to run the `queue:work` command as an os
+background job.
 
 # Diagram
 

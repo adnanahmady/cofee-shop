@@ -13,10 +13,12 @@ endef
 up:
 	@$(shell touch .backend/bash_history)
 	@docker-compose up -d ${options}
+	@docker-compose exec ${mainService} php /backend/artisan queue:work >/dev/null &
 
 down:
 	@docker-compose down
 
+ps: status
 status:
 	@docker-compose ps
 
@@ -27,7 +29,7 @@ shell:
 	@$(call execute,${service},$(call default,${run},${mainShell}))
 
 logs:
-	@docker-compose logs ${service}
+	@docker-compose logs ${service} $(if follow,-f,)
 
 test:
 	@$(call execute,${service},composer test)

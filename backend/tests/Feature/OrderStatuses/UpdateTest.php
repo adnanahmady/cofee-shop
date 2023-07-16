@@ -5,6 +5,11 @@ namespace Tests\Feature\OrderStatuses;
 use App\Enums\AbilityEnum;
 use App\Http\Requests\Api\V1\OrderStatuses\UpdateRequest;
 use App\Models\OrderItem;
+use App\Notifications\StatusChangeNotification;
+use App\Repositories\OrderRepository;
+use Illuminate\Notifications\SendQueuedNotifications;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\DataProvider;
 use App\Http\Resources\Api\V1\Orders\{Updated, Shared};
 use App\Models\Order;
@@ -22,6 +27,37 @@ class UpdateTest extends TestCase
 {
     use RefreshDatabase;
     use LetsBeTrait;
+
+    public function test_it_should_push_user_notification_to_queue(): void
+    {
+        Queue::fake([SendQueuedNotifications::class]);
+        $this->loginAsManager();
+        $order = createOrder();
+
+        $this->request(order: $order);
+
+        Queue::assertPushed(
+            SendQueuedNotifications::class,
+            fn (SendQueuedNotifications $job) => (
+                $job->notification::class === StatusChangeNotification::class
+            )
+        );
+    }
+
+    public function test_it_should_notify_the_user_after_the_order_status_gets_changed(): void
+    {
+        Notification::fake();
+        $repository = new OrderRepository();
+        $this->loginAsManager();
+        $order = createOrder();
+
+        $this->request(order: $order);
+
+        Notification::assertSentTo(
+            $repository->getCustomer($order),
+            StatusChangeNotification::class
+        );
+    }
 
     public static function dataProviderForValidationTest(): array
     {

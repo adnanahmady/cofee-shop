@@ -74,4 +74,9 @@ class Order extends Model
             OrderStatus::ID
         );
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
