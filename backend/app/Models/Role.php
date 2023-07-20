@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Contracts\Models\Fields\SlugContract;
 use App\Contracts\Models\RoleAbilityContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,12 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Role extends Model implements
     IdContract,
-    NameContract
+    NameContract,
+    SlugContract
 {
     use HasFactory;
 
     public const TABLE = 'roles';
-    public const SLUG = 'slug';
 
     protected $table = self::TABLE;
 

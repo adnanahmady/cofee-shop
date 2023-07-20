@@ -4,17 +4,18 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Contracts\Models\Fields\SlugContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Ability extends Model implements
     IdContract,
-    NameContract
+    NameContract,
+    SlugContract
 {
     use HasFactory;
 
     public const TABLE = 'abilities';
-    public const SLUG = 'slug';
 
     protected $table = self::TABLE;
 
