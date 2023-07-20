@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\Models\Fields\IdContract;
 use App\Interfaces\IdInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,12 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
-class Order extends Model
+class Order extends Model implements IdContract
 {
     use HasFactory;
 
     public const TABLE = 'orders';
-    public const ID = 'id';
     public const USER = 'user_id';
     public const STATUS = 'status_id';
 

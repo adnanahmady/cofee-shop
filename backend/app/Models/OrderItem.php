@@ -2,20 +2,20 @@
 
 namespace App\Models;
 
+use App\Contracts\Models\Fields\IdContract;
 use App\Traits\Models\HasPriceAndCurrencyTrait;
 use App\Traits\Models\HasPriceObjectPropertyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrderItem extends Model
+class OrderItem extends Model implements IdContract
 {
     use HasFactory;
     use HasPriceAndCurrencyTrait;
     use HasPriceObjectPropertyTrait;
 
     public const TABLE = 'order_items';
-    public const ID = 'id';
     public const PRODUCT = 'product_id';
     public const ORDER = 'order_id';
     public const AMOUNT = 'amount';

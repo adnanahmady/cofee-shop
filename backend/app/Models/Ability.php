@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Contracts\Models\Fields\IdContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ability extends Model
+class Ability extends Model implements IdContract
 {
     use HasFactory;
 
     public const TABLE = 'abilities';
-    public const ID = 'id';
     public const NAME = 'name';
     public const SLUG = 'slug';
 
@@ -27,6 +27,11 @@ class Ability extends Model
         self::NAME,
         self::SLUG,
     ];
+
+    public function getId(): int
+    {
+        return $this->{self::ID};
+    }
 
     public function getName(): string
     {

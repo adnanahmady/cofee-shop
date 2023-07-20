@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
+use App\Contracts\Models\Fields\IdContract;
 use App\Traits\Models\HasPriceAndCurrencyTrait;
 use App\Traits\Models\HasPriceObjectPropertyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Product extends Model implements IdContract
 {
     use HasFactory;
     use HasPriceAndCurrencyTrait;
     use HasPriceObjectPropertyTrait;
 
     public const TABLE = 'products';
-    public const ID = 'id';
     public const NAME = 'name';
     public const AMOUNT = 'amount';
     public const PRICE = 'price';

@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use App\Interfaces\IdInterface;
+use App\Contracts\Models\Fields\IdContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderStatus extends Model implements IdInterface
+class OrderStatus extends Model implements IdContract
 {
     use HasFactory;
 
     public const TABLE = 'order_statuses';
-    public const ID = 'id';
     public const NAME = 'name';
 
     protected $table = self::TABLE;

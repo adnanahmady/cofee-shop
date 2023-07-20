@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\RoleAbilityContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Role extends Model
+class Role extends Model implements IdContract
 {
     use HasFactory;
 
     public const TABLE = 'roles';
-    public const ID = 'id';
     public const NAME = 'name';
     public const SLUG = 'slug';
 
@@ -29,6 +29,11 @@ class Role extends Model
         self::NAME,
         self::SLUG,
     ];
+
+    public function getId(): int
+    {
+        return $this->{self::ID};
+    }
 
     public function getName(): string
     {

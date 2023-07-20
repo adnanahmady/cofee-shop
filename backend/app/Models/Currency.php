@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Contracts\Models\Fields\IdContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Currency extends Model
+class Currency extends Model implements IdContract
 {
     use HasFactory;
 
     public const TABLE = 'currencies';
-    public const ID = 'id';
     public const NAME = 'name';
     public const CODE = 'code';
     public const DECIMAL_PLACES = 'decimal_places';

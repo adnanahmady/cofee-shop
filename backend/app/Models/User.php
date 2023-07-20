@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\RoleUserContract;
 use App\ValueObjects\Users\NameInterface;
 use App\ValueObjects\Users\NameObject;
@@ -13,14 +14,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements IdContract
 {
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
 
     public const TABLE = 'users';
-    public const ID = 'id';
     public const FIRST_NAME = 'first_name';
     public const LAST_NAME = 'last_name';
     public const EMAIL = 'email';
