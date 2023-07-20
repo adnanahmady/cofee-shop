@@ -8,6 +8,7 @@ use App\Contracts\Models\Fields\SlugContract;
 use App\Contracts\Models\RoleAbilityContract;
 use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\Fields\HasNameTrait;
+use App\Traits\Models\Fields\HasSlugTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,6 +21,7 @@ class Role extends Model implements
     use HasFactory;
     use HasIdTrait;
     use HasNameTrait;
+    use HasSlugTrait;
 
     public const TABLE = 'roles';
 
@@ -36,11 +38,6 @@ class Role extends Model implements
         self::NAME,
         self::SLUG,
     ];
-
-    public function getSlug(): string
-    {
-        return $this->{self::SLUG};
-    }
 
     public function abilities(): BelongsToMany
     {
