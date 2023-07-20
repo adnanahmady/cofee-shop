@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
+use App\Contracts\Models\Fields\NameContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderStatus extends Model implements IdContract
+class OrderStatus extends Model implements
+    IdContract,
+    NameContract
 {
     use HasFactory;
 
     public const TABLE = 'order_statuses';
-    public const NAME = 'name';
 
     protected $table = self::TABLE;
     protected $primaryKey = self::ID;
