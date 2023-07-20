@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Contracts\Models\Fields\AmountContract;
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Traits\Models\Fields\HasAmountTrait;
 use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\Fields\HasNameTrait;
 use App\Traits\Models\HasPriceAndCurrencyTrait;
@@ -13,16 +15,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model implements
     IdContract,
-    NameContract
+    NameContract,
+    AmountContract
 {
     use HasFactory;
     use HasIdTrait;
     use HasNameTrait;
+    use HasAmountTrait;
     use HasPriceAndCurrencyTrait;
     use HasPriceObjectPropertyTrait;
 
     public const TABLE = 'products';
-    public const AMOUNT = 'amount';
     public const PRICE = 'price';
     public const CURRENCY = 'currency_id';
 
@@ -45,15 +48,5 @@ class Product extends Model implements
     protected function getCurrencyName(): string
     {
         return self::CURRENCY;
-    }
-
-    public function getAmount(): int
-    {
-        return $this->{self::AMOUNT};
-    }
-
-    public function setAmount(int $amount): void
-    {
-        $this->{self::AMOUNT} = $amount;
     }
 }

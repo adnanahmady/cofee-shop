@@ -2,7 +2,6 @@
 
 namespace App\Traits\Models\Fields;
 
-use App\Contracts\Models\Fields\NameContract;
 use App\Contracts\Models\Fields\SlugContract;
 
 trait HasSlugTrait
