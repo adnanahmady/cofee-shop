@@ -18,6 +18,7 @@ use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
+use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
 
 class GetListTest extends TestCase
 {
@@ -38,8 +39,8 @@ class GetListTest extends TestCase
             List\OrderResource::DELIVERY_TYPE,
         ]));
 
-        $this->assertIsInt($order[Shared\DeliveryTypeResource::ID]);
-        $this->assertIsString($order[Shared\DeliveryTypeResource::NAME]);
+        $this->assertIsInt($order[DeliveryTypeResource::ID]);
+        $this->assertIsString($order[DeliveryTypeResource::NAME]);
     }
 
     public function test_default_value_for_page_should_be_expected(): void

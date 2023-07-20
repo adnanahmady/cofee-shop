@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Orders\Shared;
+namespace App\Http\Resources\Api\V1\Shared;
 
 use App\Models\DeliveryType;
 use Illuminate\Http\Request;

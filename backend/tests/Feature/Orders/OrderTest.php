@@ -3,6 +3,7 @@
 namespace Tests\Feature\Orders;
 
 use App\Http\Requests\Api\V1\Orders\StoreRequest;
+use App\Http\Resources\Api\V1\Orders\Shared;
 use App\Http\Resources\Api\V1\Orders\Stored;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -15,7 +16,7 @@ use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use App\Http\Resources\Api\V1\Orders\Shared;
+use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
 
 class OrderTest extends TestCase
 {
@@ -38,8 +39,8 @@ class OrderTest extends TestCase
         ]));
 
         $this->assertSame([
-            Shared\DeliveryTypeResource::ID => $deliveryType->getId(),
-            Shared\DeliveryTypeResource::NAME => $deliveryType->getName(),
+            DeliveryTypeResource::ID => $deliveryType->getId(),
+            DeliveryTypeResource::NAME => $deliveryType->getName(),
         ], $order[Shared\DataResource::DELIVERY_TYPE]);
     }
 
