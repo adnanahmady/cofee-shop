@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\Fields\HasNameTrait;
 use App\Traits\Models\HasPriceAndCurrencyTrait;
 use App\Traits\Models\HasPriceObjectPropertyTrait;
@@ -15,6 +16,7 @@ class Product extends Model implements
     NameContract
 {
     use HasFactory;
+    use HasIdTrait;
     use HasNameTrait;
     use HasPriceAndCurrencyTrait;
     use HasPriceObjectPropertyTrait;
@@ -43,11 +45,6 @@ class Product extends Model implements
     protected function getCurrencyName(): string
     {
         return self::CURRENCY;
-    }
-
-    public function getId(): int
-    {
-        return $this->{self::ID};
     }
 
     public function getAmount(): int

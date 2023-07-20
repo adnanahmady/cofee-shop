@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
 use App\Interfaces\IdInterface;
+use App\Traits\Models\Fields\HasIdTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 class Order extends Model implements IdContract
 {
     use HasFactory;
+    use HasIdTrait;
 
     public const TABLE = 'orders';
     public const USER = 'user_id';
@@ -25,11 +27,6 @@ class Order extends Model implements IdContract
     protected $fillable = [
         self::USER,
     ];
-
-    public function getId(): int
-    {
-        return $this->{self::ID};
-    }
 
     public function getUserId(): int
     {

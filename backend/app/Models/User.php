@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\RoleUserContract;
+use App\Traits\Models\Fields\HasIdTrait;
 use App\ValueObjects\Users\NameInterface;
 use App\ValueObjects\Users\NameObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,7 @@ class User extends Authenticatable implements IdContract
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
+    use HasIdTrait;
 
     public const TABLE = 'users';
     public const FIRST_NAME = 'first_name';
@@ -62,11 +64,6 @@ class User extends Authenticatable implements IdContract
     ];
 
     private null|NameInterface $name = null;
-
-    public function getId(): int
-    {
-        return $this->{self::ID};
-    }
 
     public function getName(): NameInterface
     {

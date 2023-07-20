@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
+use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\HasPriceAndCurrencyTrait;
 use App\Traits\Models\HasPriceObjectPropertyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class OrderItem extends Model implements IdContract
 {
     use HasFactory;
+    use HasIdTrait;
     use HasPriceAndCurrencyTrait;
     use HasPriceObjectPropertyTrait;
 
@@ -42,11 +44,6 @@ class OrderItem extends Model implements IdContract
     protected function getCurrencyName(): string
     {
         return self::CURRENCY;
-    }
-
-    public function getId(): int
-    {
-        return $this->{self::ID};
     }
 
     public function getProductId(): int

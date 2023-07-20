@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\Fields\HasNameTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class Currency extends Model implements
     NameContract
 {
     use HasFactory;
+    use HasIdTrait;
     use HasNameTrait;
 
     public const TABLE = 'currencies';
@@ -28,11 +30,6 @@ class Currency extends Model implements
         self::CODE,
         self::DECIMAL_PLACES,
     ];
-
-    public function getId(): int
-    {
-        return $this->{self::ID};
-    }
 
     public function getCode(): string
     {

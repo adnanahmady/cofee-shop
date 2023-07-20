@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\Fields\HasNameTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class OrderStatus extends Model implements
     NameContract
 {
     use HasFactory;
+    use HasIdTrait;
     use HasNameTrait;
 
     public const TABLE = 'order_statuses';
@@ -23,9 +25,4 @@ class OrderStatus extends Model implements
     protected $fillable = [
         self::NAME,
     ];
-
-    public function getId(): int
-    {
-        return $this->{self::ID};
-    }
 }

@@ -6,6 +6,7 @@ use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
 use App\Contracts\Models\Fields\SlugContract;
 use App\Contracts\Models\RoleAbilityContract;
+use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\Fields\HasNameTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ class Role extends Model implements
     SlugContract
 {
     use HasFactory;
+    use HasIdTrait;
     use HasNameTrait;
 
     public const TABLE = 'roles';
@@ -34,11 +36,6 @@ class Role extends Model implements
         self::NAME,
         self::SLUG,
     ];
-
-    public function getId(): int
-    {
-        return $this->{self::ID};
-    }
 
     public function getSlug(): string
     {
