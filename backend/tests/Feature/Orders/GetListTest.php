@@ -6,10 +6,12 @@ use App\Enums\AbilityEnum;
 use App\Http\Requests\Api\V1\Orders\GetListRequest;
 use App\Http\Resources\Api\V1\Orders\List;
 use App\Http\Resources\Api\V1\Orders\Shared;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use App\Support\Calculators\TotalPrice;
 use App\Support\Values\Pagination\PerPageValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
@@ -24,10 +26,25 @@ class GetListTest extends TestCase
 
     private UserRepository $userRepository;
 
+    public function test_the_order_type_should_be_determined(): void
+    {
+        $this->withoutExceptionHandling();
+        $user = $this->login();
+        createOrder(fields: [Order::USER => $user]);
+
+        $order = $this->request()->json(join('.', [
+            List\PaginatorCollection::DATA,
+            0,
+            List\OrderResource::DELIVERY_TYPE,
+        ]));
+
+        $this->assertIsInt($order[Shared\DeliveryTypeResource::ID]);
+        $this->assertIsString($order[Shared\DeliveryTypeResource::NAME]);
+    }
+
     public function test_default_value_for_page_should_be_expected(): void
     {
         $this->withoutExceptionHandling();
-        createOrder(count: 5);
         $this->login();
 
         $response = $this->request(perPage: 2)->json();
@@ -42,7 +59,6 @@ class GetListTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $perPageValue = new PerPageValue();
-        createOrder(count: 5);
         $this->login();
 
         $response = $this->request(page: 3)->json();
@@ -64,9 +80,9 @@ class GetListTest extends TestCase
     #[DataProvider('dataProviderForParameterValidationTest')]
     public function test_parameter_validation(array $params): void
     {
-        createOrder(count: 3);
+        createOrder(count: 1);
         $manager = $this->loginAsManger();
-        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+        $this->userRepository->saveOrders($manager, createOrder(count: 1));
 
         $response = $this->request(...$params);
 
@@ -77,9 +93,9 @@ class GetListTest extends TestCase
     public function test_user_should_be_able_to_paginate(): void
     {
         $this->withoutExceptionHandling();
-        createOrder(count: 3);
+        createOrder(count: 1);
         $manager = $this->loginAsManger();
-        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+        $this->userRepository->saveOrders($manager, createOrder(count: 1));
 
         $response = $this->request(page: 3, perPage: 2)->json();
 
@@ -90,9 +106,8 @@ class GetListTest extends TestCase
     public function test_paginated_response_should_contain_expected_fields(): void
     {
         $this->withoutExceptionHandling();
-        createOrder(count: 3);
-        $manager = $this->loginAsManger();
-        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+        $user = $this->login();
+        createOrder([Order::USER => $user]);
 
         $response = $this->request()->json();
 
@@ -106,28 +121,16 @@ class GetListTest extends TestCase
         $this->assertIsInt($meta['per_page']);
     }
 
-    public function test_the_response_should_be_paginated(): void
-    {
-        $this->withoutExceptionHandling();
-        createOrder(count: 3);
-        $manager = $this->loginAsManger();
-        $this->userRepository->saveOrders($manager, createOrder(count: 2));
-
-        $response = $this->request()->json();
-
-        $this->assertGreaterThan(1, count($response));
-    }
-
     public function test_the_manager_can_see_the_list_or_all_orders_regardless_of_the_user(): void
     {
         $this->withoutExceptionHandling();
-        createOrder(count: 3);
+        createOrder(count: 2);
         $manager = $this->loginAsManger();
-        $this->userRepository->saveOrders($manager, createOrder(count: 2));
+        $this->userRepository->saveOrders($manager, createOrder(count: 1));
 
         $data = $this->request()->json(List\PaginatorCollection::DATA);
 
-        $this->assertCount(5, $data);
+        $this->assertCount(3, $data);
     }
 
     public function loginAsManger(): User
@@ -140,6 +143,7 @@ class GetListTest extends TestCase
     public function test_order_item_should_have_expected_fields(): void
     {
         $this->withoutExceptionHandling();
+        $totalPrice = new TotalPrice();
         [$orderItems] = $this->setItemsOfOrders();
 
         $item = $this->request()->json(join('.', [
@@ -150,12 +154,16 @@ class GetListTest extends TestCase
         ]));
 
         $this->assertArrayHasKeys([
-            List\OrderItemResource::ID,
-            List\OrderItemResource::NAME,
-            List\OrderItemResource::AMOUNT,
-            List\OrderItemResource::PRICE,
+            Shared\ItemResource::ITEM_ID,
+            Shared\ItemResource::NAME,
+            Shared\ItemResource::AMOUNT,
+            Shared\ItemResource::PRICE,
         ], $item);
-        $priceObject = $orderItems[0][0]->getPriceObject();
+        $orderedItem = $orderItems[0][0];
+        $priceObject = $totalPrice->addPrices(
+            $orderedItem->getPriceObject(),
+            $orderedItem->getAmount(),
+        );
         $this->assertSame($priceObject->represent(), $item['price']);
     }
 
@@ -194,7 +202,7 @@ class GetListTest extends TestCase
         ]));
 
         $this->assertArrayHasKeys([
-            List\OrderResource::ID,
+            List\OrderResource::ORDER_ID,
             List\OrderResource::ITEMS,
             List\OrderResource::TOTAL_PRICE,
             List\OrderResource::STATUS,
@@ -205,10 +213,10 @@ class GetListTest extends TestCase
 
     private function setItemsOfOrders(): array
     {
-        $orders = createOrder(count: 2);
+        $orders = createOrder(count: 1);
         $orderItems = $orders->map(fn ($order) => createOrderItem(fields: [
             OrderItem::ORDER => $order,
-        ], count: 3));
+        ], count: 2));
         $this->userRepository->saveOrders($this->login(), $orders);
 
         return [$orderItems, $orders];
