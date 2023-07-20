@@ -48,8 +48,6 @@ class OrderItem extends Model implements
     /**
      * This method is implemented for the
      * trait that demanded it.
-     *
-     * @return string
      */
     protected function getCurrencyName(): string
     {

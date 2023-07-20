@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Orders;
 
+use App\Exceptions\Models\InvalidOrderItemAmountException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\GetListRequest;
 use App\Http\Requests\Api\V1\Orders\StoreRequest;
@@ -25,13 +26,23 @@ class OrderController extends Controller
         );
     }
 
+    /**
+     * The thrown exception is a handled one, and
+     * its effect is expected.
+     *
+     * @param StoreRequest    $request         request
+     * @param OrderRepository $orderRepository orderRepository
+     *
+     * @throws InvalidOrderItemAmountException
+     */
     public function store(
         StoreRequest $request,
         OrderRepository $orderRepository
     ): Stored\PaginatorResource {
         $order = $orderRepository->orderProducts(
             $request->user(),
-            $request->getProducts()
+            $request->getProducts(),
+            $request->getDeliveryType(),
         );
 
         return new Stored\PaginatorResource($order);

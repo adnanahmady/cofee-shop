@@ -16,6 +16,7 @@ class DataResource extends JsonResource
     public const ITEMS = 'items';
     public const TOTAL_PRICE = 'total_price';
     public const STATUS = 'status';
+    public const DELIVERY_TYPE = 'delivery_type';
 
     /** @var Order */
     public $resource;
@@ -51,6 +52,9 @@ class DataResource extends JsonResource
             self::TOTAL_PRICE => $this->totalPrice->represent(),
             self::STATUS => new StatusResource(
                 $this->orderRepository->getStatus($this->resource),
+            ),
+            self::DELIVERY_TYPE => new DeliveryTypeResource(
+                $this->orderRepository->getDeliveryType($this->resource),
             ),
         ];
     }

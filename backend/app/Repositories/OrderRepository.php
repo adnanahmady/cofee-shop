@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Exceptions\Models\InvalidOrderItemAmountException;
+use App\Interfaces\IdInterface;
+use App\Models\DeliveryType;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
@@ -10,7 +12,6 @@ use App\Models\Product;
 use App\Models\User;
 use App\Support\OrderStateDeterminer\Values\WaitingValue;
 use App\Support\RequestMappers\Orders\DataMapperInterface;
-use App\Support\Values\ValueInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -61,18 +62,22 @@ class OrderRepository
         return $order?->status;
     }
 
-    public function hasSameStatus(Order $order, ValueInterface $status): bool
+    public function getDeliveryType(Order $order): ?DeliveryType
     {
-        return $this->getStatus($order)->getName() === (string) $status;
+        return $order?->deliveryType;
     }
 
+    /**
+     * @throws InvalidOrderItemAmountException
+     */
     public function orderProducts(
         User $user,
-        DataMapperInterface $products
+        DataMapperInterface $products,
+        IdInterface $deliveryType,
     ): Order {
         try {
             DB::beginTransaction();
-            $order = $this->createOrder($user);
+            $order = $this->createOrder($user, $deliveryType);
 
             foreach ($products as $item) {
                 $this->addProduct(
@@ -90,8 +95,10 @@ class OrderRepository
         }
     }
 
-    public function createOrder(User $user): Order
-    {
+    public function createOrder(
+        User $user,
+        IdInterface $deliveryType
+    ): Order {
         $order = new Order();
         $order->setUser($user);
         $order->setStatus(
@@ -99,6 +106,7 @@ class OrderRepository
                 new WaitingValue()
             )
         );
+        $order->setDeliveryType($deliveryType);
         $order->save();
 
         return $order;

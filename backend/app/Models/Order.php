@@ -19,6 +19,7 @@ class Order extends Model implements IdContract
     public const TABLE = 'orders';
     public const USER = 'user_id';
     public const STATUS = 'status_id';
+    public const DELIVERY_TYPE = 'delivery_type_id';
 
     protected $table = self::TABLE;
 
@@ -41,6 +42,11 @@ class Order extends Model implements IdContract
     public function setStatus(IdInterface $status): void
     {
         $this->{self::STATUS} = $status->getId();
+    }
+
+    public function setDeliveryType(IdInterface $deliveryType): void
+    {
+        $this->{self::DELIVERY_TYPE} = $deliveryType->getId();
     }
 
     public function getCreatedAt(): string
@@ -75,5 +81,14 @@ class Order extends Model implements IdContract
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function deliveryType(): BelongsTo
+    {
+        return $this->belongsTo(
+            DeliveryType::class,
+            self::DELIVERY_TYPE,
+            DeliveryType::ID
+        );
     }
 }

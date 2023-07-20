@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\DeliveryType;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\User;
@@ -22,6 +23,7 @@ class OrderFactory extends Factory
         return [
             Order::USER => User::factory(),
             Order::STATUS => OrderStatus::factory(),
+            Order::DELIVERY_TYPE => DeliveryType::factory(),
         ];
     }
 }
