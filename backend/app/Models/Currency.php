@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Traits\Models\Fields\HasNameTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,7 @@ class Currency extends Model implements
     NameContract
 {
     use HasFactory;
+    use HasNameTrait;
 
     public const TABLE = 'currencies';
     public const CODE = 'code';
@@ -30,16 +32,6 @@ class Currency extends Model implements
     public function getId(): int
     {
         return $this->{self::ID};
-    }
-
-    public function getName(): string
-    {
-        return $this->{self::NAME};
-    }
-
-    public function setName(string $name): void
-    {
-        $this->{self::NAME} = $name;
     }
 
     public function getCode(): string

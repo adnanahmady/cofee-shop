@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
 use App\Contracts\Models\Fields\SlugContract;
+use App\Traits\Models\Fields\HasNameTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,7 @@ class Ability extends Model implements
     SlugContract
 {
     use HasFactory;
+    use HasNameTrait;
 
     public const TABLE = 'abilities';
 
@@ -34,11 +36,6 @@ class Ability extends Model implements
     public function getId(): int
     {
         return $this->{self::ID};
-    }
-
-    public function getName(): string
-    {
-        return $this->{self::NAME};
     }
 
     public function getSlug(): string
