@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Collection;
 
 class DeliveryTypeRepository
 {
+    public function create(string $name)
+    {
+        return DeliveryType::firstOrCreate([DeliveryType::NAME => $name]);
+    }
+
     public function findById(int $id): DeliveryType|null
     {
         return DeliveryType::find($id);
