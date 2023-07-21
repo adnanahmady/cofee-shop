@@ -13,6 +13,9 @@ Route::middleware('auth:api')->group(function (): void {
     Route::name('order-statuses.')->group(
         base_path('routes/api/v1/order-statuses.php')
     );
+    Route::name('order-types.')->group(
+        base_path('routes/api/v1/order-types.php')
+    );
     Route::name('delivery-types.')->group(
         base_path('routes/api/v1/delivery-types.php')
     );

@@ -27,6 +27,21 @@ class OrderRepository
         $this->statusRepository = new OrderStatusRepository();
     }
 
+    public function doesBelongToUser(Order $order, IdInterface $user): bool
+    {
+        return $user->getId() === $order->user->getId();
+    }
+
+    public function updateDeliveryType(
+        Order $order,
+        IdInterface $deliveryType
+    ): Order {
+        $order->setDeliveryType($deliveryType);
+        $order->save();
+
+        return $order;
+    }
+
     public function getCustomer(Order $order): User
     {
         return $order->user;

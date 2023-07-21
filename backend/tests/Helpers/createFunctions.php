@@ -75,11 +75,16 @@ if (!function_exists('createOrder')) {
     function createOrder(
         array $fields = [],
         int $count = null,
+        User $for = null,
     ): Order|Collection {
         $factory = Order::factory();
 
         if ($count) {
             $factory = $factory->count($count);
+        }
+
+        if (null !== $for) {
+            $fields[Order::USER] = $for;
         }
 
         return $factory->create($fields);

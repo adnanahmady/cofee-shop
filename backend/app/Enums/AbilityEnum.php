@@ -6,6 +6,7 @@ enum AbilityEnum: string
 {
     case AddProduct = 'Add product';
     case SetOrderStatus = 'Set order status';
+    case SetOrderType = 'Set order type';
 
     public function slugify(): string
     {
