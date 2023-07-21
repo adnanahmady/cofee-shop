@@ -5,15 +5,15 @@ namespace App\Services;
 use App\Enums\AbilityEnum;
 use App\Models\User;
 use App\Repositories\OrderRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrderService
 {
-    private OrderRepository $orderRepository;
-
-    public function __construct()
-    {
-        $this->orderRepository = new OrderRepository();
+    public function __construct(
+        private readonly OrderRepository $orderRepository,
+        private readonly UserRepository $userRepository
+    ) {
     }
 
     public function getPaginated(
@@ -21,8 +21,9 @@ class OrderService
         int $page,
         int $perPage,
     ): LengthAwarePaginator {
-        $isManager = $user->tokenCan(
-            AbilityEnum::SetOrderStatus->slugify()
+        $isManager = $this->userRepository->isAbleTo(
+            $user,
+            AbilityEnum::SetOrderStatus
         );
 
         if ($isManager) {
