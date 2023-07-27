@@ -45,6 +45,9 @@
         "fix": [
             "php-cs-fixer --verbose --diff fix $(pwd)"
         ],
+        "coverage": [
+            "XDEBUG_MODE=coverage phpunit --coverage-html $(pwd)/tests/.coverage"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
