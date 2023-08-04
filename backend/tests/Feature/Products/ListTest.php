@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Products;
 
+use App\Models\Customization;
+use App\Models\Option;
 use App\Models\Product;
 use App\Models\User;
+use App\Repositories\ProductRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Resources\Api\V1\Products\List;
 use Illuminate\Testing\TestResponse;
@@ -14,6 +17,27 @@ class ListTest extends TestCase
 {
     use RefreshDatabase;
     use LetsBeTrait;
+
+    public function test_product_customization_options_should_be_shown_as_expected(): void
+    {
+        $repository = new ProductRepository();
+        $customization = createCustomization([Customization::NAME => 'Size']);
+        array_map(fn ($option) => createOption([
+            Option::NAME => $option,
+            Option::CUSTOMIZATION => $customization,
+        ]), $options = ['small', 'medium', 'large']);
+        $repository->addCustomization(createProduct(), $customization);
+        $this->login();
+
+        $item = $this->request()->json(
+            $this->join([List\PaginatorCollection::DATA, 0])
+        );
+
+        $this->assertSame([[
+            List\CustomizationResource::NAME => $customization->getName(),
+            List\CustomizationResource::OPTIONS => $options,
+        ]], $item[List\ItemResource::CUSTOMIZATIONS]);
+    }
 
     public function test_each_product_needs_to_be_shown_in_proper_format(): void
     {

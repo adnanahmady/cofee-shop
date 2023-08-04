@@ -4,12 +4,26 @@ namespace App\Repositories;
 
 use App\ExceptionMessages\InvalidOrderItemAmountMessage;
 use App\Exceptions\Models\InvalidOrderItemAmountException;
+use App\Models\Customization;
 use App\Models\Product;
 use App\ValueObjects\Shared\PriceInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductRepository
 {
+    public function addCustomization(
+        Product $product,
+        Customization $customization
+    ): Model|Customization {
+        return $product->customizations()->save($customization);
+    }
+
+    public function getCustomizations(Product $product): Collection
+    {
+        return $product->customizations;
+    }
+
     public function getAvailable(): Collection
     {
         return Product::where(Product::AMOUNT, '>', 0)->get();

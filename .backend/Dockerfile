@@ -16,7 +16,7 @@ RUN echo 'alias art="php artisan"' >> $HOME/.bashrc \
     && echo 'alias g="git"' >> $HOME/.bashrc \
     && echo 'alias ga="git add"' >> $HOME/.bashrc \
     && echo 'alias gl="git log"' >> $HOME/.bashrc \
-    && echo 'alias t="composer test --"' >> $HOME/.bashrc \
+    && echo 't() { composer test -- $(echo $1 | sed "s/.*test/test/"); }' >> $HOME/.bashrc \
     && echo 'alias tf="composer test -- --filter"' >> $HOME/.bashrc
 
 USER root

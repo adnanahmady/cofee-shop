@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Contracts\Models\Fields\AmountContract;
 use App\Contracts\Models\Fields\IdContract;
 use App\Contracts\Models\Fields\NameContract;
+use App\Contracts\Models\ProductCustomizationContract;
 use App\Traits\Models\Fields\HasAmountTrait;
 use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\Fields\HasNameTrait;
@@ -12,6 +13,7 @@ use App\Traits\Models\HasPriceAndCurrencyTrait;
 use App\Traits\Models\HasPriceObjectPropertyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model implements
     IdContract,
@@ -48,5 +50,13 @@ class Product extends Model implements
     protected function getCurrencyName(): string
     {
         return self::CURRENCY;
+    }
+
+    public function customizations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Customization::class,
+            ProductCustomizationContract::TABLE
+        );
     }
 }

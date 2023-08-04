@@ -12,7 +12,7 @@ $(compose) exec $(call default,$1,${mainService}) $2
 endef
 
 up:
-	@$$(shell touch .backend/bash_history)
+	@$$(touch .backend/bash_history)
 	@$(compose) up -d ${options}
 	@$(compose) exec ${mainService} php /backend/artisan queue:work >/dev/null &
 

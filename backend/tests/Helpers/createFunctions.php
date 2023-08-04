@@ -3,6 +3,8 @@
 use App\Models\Ability;
 use App\Models\Currency;
 use App\Models\DeliveryType;
+use App\Models\Customization;
+use App\Models\Option;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
@@ -10,6 +12,36 @@ use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+
+if (!function_exists('createOption')) {
+    function createOption(
+        array $fields = [],
+        int $count = null,
+    ): Option|Collection {
+        $factory = Option::factory();
+
+        if ($count) {
+            $factory = $factory->count($count);
+        }
+
+        return $factory->create($fields);
+    }
+}
+
+if (!function_exists('createCustomization')) {
+    function createCustomization(
+        array $fields = [],
+        int $count = null,
+    ): Customization|Collection {
+        $factory = Customization::factory();
+
+        if ($count) {
+            $factory = $factory->count($count);
+        }
+
+        return $factory->create($fields);
+    }
+}
 
 if (!function_exists('createDeliveryType')) {
     function createDeliveryType(
