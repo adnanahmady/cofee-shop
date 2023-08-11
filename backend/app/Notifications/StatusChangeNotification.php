@@ -44,7 +44,7 @@ class StatusChangeNotification extends Notification implements ShouldQueue
                 'user' => $this->getName(),
             ]))
             ->line('You can visit your order by bellow link')
-            ->action('See Order', $this->getOrderShowAddress());
+            ->action('See Order', $this->getShowOrderUri());
     }
 
     private function getName(): string
@@ -64,7 +64,7 @@ class StatusChangeNotification extends Notification implements ShouldQueue
      * the order is passed to the notification using the
      * constructor.
      */
-    private function getOrderShowAddress(): string
+    private function getShowOrderUri(): string
     {
         return url(renderString($this->getFormedEndpoint(), [
             'order' => $this->order->getId(),
