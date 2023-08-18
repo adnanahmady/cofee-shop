@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\Products;
 
-use App\Models\Customization;
-use App\Models\Option;
 use App\Models\Product;
 use App\Models\User;
-use App\Repositories\ProductRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Resources\Api\V1\Products\List;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
+use App\Http\Resources\Api\V1\Shared;
 
 class ListTest extends TestCase
 {
@@ -20,13 +18,11 @@ class ListTest extends TestCase
 
     public function test_product_customization_options_should_be_shown_as_expected(): void
     {
-        $repository = new ProductRepository();
-        $customization = createCustomization([Customization::NAME => 'Size']);
-        array_map(fn ($option) => createOption([
-            Option::NAME => $option,
-            Option::CUSTOMIZATION => $customization,
-        ]), $options = ['small', 'medium', 'large']);
-        $repository->addCustomization(createProduct(), $customization);
+        [, $customization] = addCustomizationToProduct(
+            createProduct(),
+            'Size',
+            $options = ['small', 'medium', 'large'],
+        );
         $this->login();
 
         $item = $this->request()->json(
@@ -34,8 +30,8 @@ class ListTest extends TestCase
         );
 
         $this->assertSame([[
-            List\CustomizationResource::NAME => $customization->getName(),
-            List\CustomizationResource::OPTIONS => $options,
+            Shared\CustomizationResource::NAME => $customization->getName(),
+            Shared\CustomizationResource::OPTIONS => $options,
         ]], $item[List\ItemResource::CUSTOMIZATIONS]);
     }
 

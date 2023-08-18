@@ -2,19 +2,20 @@
 
 namespace App\Http\Resources\Api\V1\Products\List;
 
+use App\Http\Resources\Api\V1\Shared\CustomizationResource;
+use App\Http\Resources\Api\V1\SharedContracts\CustomizationContract;
 use App\Models\Customization;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ItemResource extends JsonResource
+class ItemResource extends JsonResource implements CustomizationContract
 {
     public const PRODUCT_ID = 'product_id';
     public const NAME = 'name';
     public const PRICE = 'price';
     public const AMOUNT = 'amount';
-    public const CUSTOMIZATIONS = 'customizations';
 
     /** @var Product */
     public $resource;

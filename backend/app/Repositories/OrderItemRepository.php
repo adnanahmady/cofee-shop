@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Exceptions\Models\InvalidOrderItemAmountException;
 use App\Models\OrderItem;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrderItemRepository
@@ -14,6 +15,11 @@ class OrderItemRepository
     public function __construct()
     {
         $this->productRepository = new ProductRepository();
+    }
+
+    public function getCustomizations(OrderItem $item): Collection
+    {
+        return $this->productRepository->getCustomizations($item->product);
     }
 
     public function delete(OrderItem $orderItem): bool|null

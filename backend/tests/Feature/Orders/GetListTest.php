@@ -18,7 +18,10 @@ use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
+use App\Http\Resources\Api\V1\Shared\{
+    DeliveryTypeResource,
+    CustomizationResource
+};
 
 class GetListTest extends TestCase
 {
@@ -26,6 +29,35 @@ class GetListTest extends TestCase
     use LetsBeTrait;
 
     private UserRepository $userRepository;
+
+    public function test_the_order_item_should_show_the_user_selected_option(): void
+    {
+        $this->withoutExceptionHandling();
+        $user = $this->login();
+        [$product, $customization] = addCustomizationToProduct(
+            product: createProduct(),
+            customization: 'Size',
+            options: $options = ['small', 'large'],
+        );
+        $order = createOrder(fields: [Order::USER => $user]);
+        createOrderItem([
+            OrderItem::ORDER => $order,
+            OrderItem::PRODUCT => $product,
+        ]);
+
+        $itemCustomizations = $this->request()->json(join('.', [
+            List\PaginatorCollection::DATA,
+            0,
+            List\OrderResource::ITEMS,
+            0,
+            Shared\ItemResource::CUSTOMIZATIONS,
+        ]));
+
+        $this->assertSame([[
+            CustomizationResource::NAME => $customization->getName(),
+            CustomizationResource::OPTIONS => $options,
+        ]], $itemCustomizations);
+    }
 
     public function test_the_order_type_should_be_determined(): void
     {

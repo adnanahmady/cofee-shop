@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Products\List;
+namespace App\Http\Resources\Api\V1\Shared;
 
 use App\Models\Customization;
 use App\Models\Option;
