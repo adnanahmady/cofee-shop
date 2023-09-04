@@ -16,6 +16,7 @@ class ListTest extends TestCase
     use RefreshDatabase;
     use LetsBeTrait;
 
+    // phpcs:ignore
     public function test_product_customization_options_should_be_shown_as_expected(): void
     {
         [, $customization] = addCustomizationToProduct(

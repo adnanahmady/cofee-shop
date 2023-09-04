@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 class TotalPriceTest extends TestCase
 {
+    // phpcs:ignore
     public function test_it_can_get_the_total_of_specified_number_of_prices(): void
     {
         $total = 0;

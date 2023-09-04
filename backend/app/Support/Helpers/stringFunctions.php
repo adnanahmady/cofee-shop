@@ -12,7 +12,7 @@ if (!function_exists('escapeString')) {
         foreach ($escapable as $character) {
             $newString = str_replace(
                 $character,
-                '\\'.$character,
+                '\\' . $character,
                 $string
             );
         }

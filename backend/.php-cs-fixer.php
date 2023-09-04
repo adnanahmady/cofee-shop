@@ -18,6 +18,7 @@ return $config->setRules([
     '@PER' => true,
     'php_unit_method_casing' => ['case' => 'snake_case'],
     'void_return' => true,
+    'concat_space' => ['spacing' => 'one'],
 ])
     ->setFinder($finder)
     ->setRiskyAllowed(true);

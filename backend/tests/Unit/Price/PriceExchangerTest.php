@@ -24,6 +24,7 @@ class PriceExchangerTest extends TestCase
         $this->assertSame($eur, $newPrice->getCurrency());
     }
 
+    // phpcs:ignore
     public function test_it_can_change_from_non_base_currency_to_another_currency(): void
     {
         $irr = $this->getIrrCurrency();

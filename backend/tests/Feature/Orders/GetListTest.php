@@ -30,6 +30,7 @@ class GetListTest extends TestCase
 
     private UserRepository $userRepository;
 
+    // phpcs:ignore
     public function test_the_order_item_should_show_the_user_selected_option(): void
     {
         $this->withoutExceptionHandling();
@@ -136,6 +137,7 @@ class GetListTest extends TestCase
         $this->assertSame(2, $response['meta']['per_page']);
     }
 
+    // phpcs:ignore
     public function test_paginated_response_should_contain_expected_fields(): void
     {
         $this->withoutExceptionHandling();
@@ -154,6 +156,7 @@ class GetListTest extends TestCase
         $this->assertIsInt($meta['per_page']);
     }
 
+    // phpcs:ignore
     public function test_the_manager_can_see_the_list_or_all_orders_regardless_of_the_user(): void
     {
         $this->withoutExceptionHandling();
@@ -200,6 +203,7 @@ class GetListTest extends TestCase
         $this->assertSame($priceObject->represent(), $item['price']);
     }
 
+    // phpcs:ignore
     public function test_the_status_field_should_determine_the_orders_status(): void
     {
         $this->withoutExceptionHandling();
@@ -283,8 +287,10 @@ class GetListTest extends TestCase
         return $this->letsBe(createUser(), abilities: $abilities);
     }
 
-    private function request(mixed $page = null, mixed $perPage = null): TestResponse
-    {
+    private function request(
+        mixed $page = null,
+        mixed $perPage = null
+    ): TestResponse {
         return $this->getJson(route(
             name: 'api.v1.orders.index',
             parameters: [

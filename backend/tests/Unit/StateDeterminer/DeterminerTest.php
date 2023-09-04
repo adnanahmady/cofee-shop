@@ -17,7 +17,8 @@ class DeterminerTest extends TestCase
     public static function dataProviderForChangeStateTest(): array
     {
         return [
-            'it should determine next state as preparation when unknown state is given' => [
+            'it should determine next state as prepared ' .
+            'when unknown state is given' => [
                 'some-state',
                 new PreparationValue(),
                 new ChoiceHolder(forward: true),

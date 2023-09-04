@@ -215,6 +215,7 @@ class OrderTest extends TestCase
         $this->assertCount(1, $response->json('errors'));
     }
 
+    // phpcs:ignore
     public function test_when_ordered_items_are_more_than_product_amount_user_can_not_purchase(): void
     {
         $this->login();
@@ -233,6 +234,7 @@ class OrderTest extends TestCase
         ]);
     }
 
+    // phpcs:ignore
     public function test_after_ordering_product_the_amount_of_product_should_be_reserved(): void
     {
         $this->withoutExceptionHandling();
@@ -256,6 +258,7 @@ class OrderTest extends TestCase
         ]);
     }
 
+    // phpcs:ignore
     public function test_user_should_be_able_to_order_multiple_items_of_the_same_product(): void
     {
         $this->withoutExceptionHandling();

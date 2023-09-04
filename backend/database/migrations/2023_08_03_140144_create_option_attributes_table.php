@@ -26,7 +26,10 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table(Option::TABLE, function (Blueprint $table): void {
-            $table->dropForeignIdFor(Customization::class, Option::CUSTOMIZATION);
+            $table->dropForeignIdFor(
+                Customization::class,
+                Option::CUSTOMIZATION
+            );
         });
         Schema::dropIfExists(Option::TABLE);
     }

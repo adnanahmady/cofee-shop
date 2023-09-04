@@ -44,6 +44,7 @@ class UpdateTest extends TestCase
         );
     }
 
+    // phpcs:ignore
     public function test_it_should_notify_the_user_after_the_order_status_gets_changed(): void
     {
         Notification::fake();
@@ -155,6 +156,7 @@ class UpdateTest extends TestCase
         ], $data);
     }
 
+    // phpcs:ignore
     public function test_it_should_update_the_status_when_going_forward_is_approved(): void
     {
         $this->withoutExceptionHandling();

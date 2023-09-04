@@ -30,10 +30,15 @@ class OrderMaker
         $this->deliveryType = $value;
     }
 
-    public function createItem(int $orderedAmount = 1, int $productAmount = 10): Product
-    {
+    public function createItem(
+        int $orderedAmount = 1,
+        int $productAmount = 10
+    ): Product {
         $product = $this->makeProduct($productAmount);
-        $this->items[] = $this->makeItem(product: $product, amount: $orderedAmount);
+        $this->items[] = $this->makeItem(
+            product: $product,
+            amount: $orderedAmount
+        );
 
         return $product;
     }

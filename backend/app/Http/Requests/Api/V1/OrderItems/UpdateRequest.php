@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1\OrderItems;
 
 use App\Http\Requests\Api\V1\AbstractFormRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class UpdateRequest extends AbstractFormRequest
 {
@@ -11,7 +12,7 @@ class UpdateRequest extends AbstractFormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {

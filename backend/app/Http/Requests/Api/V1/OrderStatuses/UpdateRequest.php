@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api\V1\OrderStatuses;
 
 use App\Http\Requests\Api\V1\AbstractFormRequest;
 use App\Support\OrderStateDeterminer\Contracts\ChoiceHolderInterface;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class UpdateRequest extends AbstractFormRequest implements ChoiceHolderInterface
 {
@@ -13,12 +14,12 @@ class UpdateRequest extends AbstractFormRequest implements ChoiceHolderInterface
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            self::FORWARD => 'boolean|required_without:'.self::ROLLBACK,
+            self::FORWARD => 'boolean|required_without:' . self::ROLLBACK,
             self::ROLLBACK => sprintf(
                 'boolean|accepted_if:%s,false',
                 self::FORWARD

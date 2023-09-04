@@ -20,7 +20,8 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.1",
-        "spatie/laravel-ignition": "^2.0"
+        "spatie/laravel-ignition": "^2.0",
+        "squizlabs/php_codesniffer": "^3.7"
     },
     "autoload": {
         "files": ["app/Support/Helpers/stringFunctions.php"],
@@ -44,7 +45,10 @@
             "XDEBUG_MODE=trace phpunit --stop-on-error --stop-on-defect --stop-on-deprecation  --colors=always"
         ],
         "fix": [
-            "php-cs-fixer --verbose --diff fix $(pwd)"
+            "php-cs-fixer --verbose --diff fix $(pwd)",
+            "phpcs -s --standard=$(pwd)/.phpcs.app.xml",
+            "phpcs -s --standard=$(pwd)/.phpcs.database.xml",
+            "phpcs -s --standard=$(pwd)/.phpcs.tests.xml"
         ],
         "coverage": [
             "XDEBUG_MODE=coverage phpunit --coverage-html $(pwd)/tests/.coverage"

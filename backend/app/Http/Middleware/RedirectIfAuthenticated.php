@@ -6,16 +6,20 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class RedirectIfAuthenticated
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
+     * @param \Closure(Request): (ResponseAlias) $next
      */
-    public function handle(Request $request, \Closure $next, string ...$guards): Response
-    {
+    public function handle(
+        Request $request,
+        \Closure $next,
+        string ...$guards
+    ): Response {
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {

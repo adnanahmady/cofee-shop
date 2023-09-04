@@ -34,6 +34,7 @@ class ListTest extends TestCase
         ], $item);
     }
 
+    // phpcs:ignore
     public function test_it_should_return_the_list_of_available_order_types(): void
     {
         $this->withoutExceptionHandling();
@@ -45,6 +46,7 @@ class ListTest extends TestCase
         $this->assertCount($count, $data);
     }
 
+    // phpcs:ignore
     public function test_it_should_not_be_accessible_for_unauthorized_users(): void
     {
         $response = $this->request();

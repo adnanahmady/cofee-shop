@@ -12,6 +12,7 @@ class ProductTest extends TestCase
 {
     use RefreshDatabase;
 
+    // phpcs:ignore
     public function test_it_should_throw_exception_if_currency_is_not_being_set(): void
     {
         $this->withoutExceptionHandling();
@@ -35,6 +36,7 @@ class ProductTest extends TestCase
         $this->assertSame(114433, $price);
     }
 
+    // phpcs:ignore
     public function test_it_stores_price_as_integer_in_database_with_expected_formula(): void
     {
         $currency = createCurrency([Currency::DECIMAL_PLACES => 4]);
@@ -46,7 +48,9 @@ class ProductTest extends TestCase
         createProduct($fields);
 
         $this->assertDatabaseHas(Product::TABLE, [
-            Product::PRICE => round($price * pow(10, $currency->getDecimalPlaces())),
+            Product::PRICE => round(
+                $price * pow(10, $currency->getDecimalPlaces())
+            ),
         ]);
     }
 }

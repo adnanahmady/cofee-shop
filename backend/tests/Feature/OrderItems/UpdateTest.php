@@ -92,6 +92,7 @@ class UpdateTest extends TestCase
         ]);
     }
 
+    // phpcs:ignore
     public function test_it_should_release_user_unwanted_amount_of_products(): void
     {
         $this->login();
@@ -114,6 +115,7 @@ class UpdateTest extends TestCase
         ]);
     }
 
+    // phpcs:ignore
     public function test_it_should_undo_invalid_amount_for_requested_products(): void
     {
         $this->login();
