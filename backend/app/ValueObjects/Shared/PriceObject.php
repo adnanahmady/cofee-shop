@@ -3,6 +3,8 @@
 namespace App\ValueObjects\Shared;
 
 use App\Models\Currency;
+use App\Support\Converters\PriceDeNormalizer;
+use App\Support\Converters\PriceNormalizer;
 use App\Support\Exchangers\PriceExchanger;
 
 class PriceObject implements PriceInterface
@@ -37,6 +39,40 @@ class PriceObject implements PriceInterface
         );
     }
 
+    /**
+     * The price object can represent its value
+     * without decimal applied form.
+     *
+     * Attention: be-careful with this functionality
+     * because it can deform the price.
+     */
+    public function toInteger(): int
+    {
+        $deNormalizer = new PriceDeNormalizer(
+            price: $this->price,
+            decimalPlaces: $this->currency->getDecimalPlaces()
+        );
+
+        return $deNormalizer->denormalize();
+    }
+
+    /**
+     * The price object can represent its value
+     * in decimal applied form.
+     *
+     * Attention: be-careful with this functionality
+     * because it can deform the price.
+     */
+    public function toNormalForm(): int|float
+    {
+        $normalizer = new PriceNormalizer(
+            price: $this->price,
+            decimalPlaces: $this->currency->getDecimalPlaces()
+        );
+
+        return $normalizer->normalize();
+    }
+
     private function getFormedPrice(): int|float
     {
         $decimalPlaces = $this->getCurrency()->getDecimalPlaces();
@@ -45,7 +81,7 @@ class PriceObject implements PriceInterface
             return (int) $this->getPrice();
         }
 
-        return round($this->getPrice(), $decimalPlaces);
+        return $this->toNormalForm();
     }
 
     public function isInSameCurrency(PriceInterface $price): bool

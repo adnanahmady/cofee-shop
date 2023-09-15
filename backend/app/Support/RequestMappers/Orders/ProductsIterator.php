@@ -2,7 +2,7 @@
 
 namespace App\Support\RequestMappers\Orders;
 
-class ProductsMapper implements DataMapperInterface
+class ProductsIterator implements ProductIteratorInterface
 {
     private int $index = 0;
 

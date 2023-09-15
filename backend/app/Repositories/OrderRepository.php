@@ -8,10 +8,10 @@ use App\Models\DeliveryType;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
-use App\Models\Product;
 use App\Models\User;
 use App\Support\OrderStateDeterminer\Values\WaitingValue;
-use App\Support\RequestMappers\Orders\DataMapperInterface;
+use App\Support\RequestMappers\Orders\ProductIteratorInterface;
+use App\Support\RequestMappers\Orders\ProductMapperInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -20,11 +20,13 @@ class OrderRepository
 {
     private ProductRepository $productRepository;
     private OrderStatusRepository $statusRepository;
+    private OrderItemRepository $orderItemRepository;
 
     public function __construct()
     {
         $this->productRepository = new ProductRepository();
         $this->statusRepository = new OrderStatusRepository();
+        $this->orderItemRepository = new OrderItemRepository();
     }
 
     public function doesBelongToUser(Order $order, IdInterface $user): bool
@@ -87,19 +89,22 @@ class OrderRepository
      */
     public function orderProducts(
         User $user,
-        DataMapperInterface $products,
+        ProductIteratorInterface $products,
         IdInterface $deliveryType,
     ): Order {
         try {
             DB::beginTransaction();
             $order = $this->createOrder($user, $deliveryType);
 
-            foreach ($products as $item) {
-                $this->addProduct(
-                    $order,
-                    $item->getProduct(),
-                    $item->getAmount()
-                );
+            foreach ($products as $product) {
+                $orderItem = $this->addProduct($order, $product);
+
+                foreach ($product->getCustomizations() as $selectedOption) {
+                    $this->orderItemRepository->addOption(
+                        $orderItem,
+                        $selectedOption->getOptionId()
+                    );
+                }
             }
             DB::commit();
 
@@ -129,12 +134,20 @@ class OrderRepository
 
     private function addProduct(
         Order $order,
-        Product $product,
-        int $amount
-    ): void {
+        ProductMapperInterface $mapper
+    ): OrderItem {
+        $product = $mapper->getProduct();
+        $amount = $mapper->getAmount();
         $this->productRepository->orderProduct($product, $amount);
         $price = $product->getPriceObject();
-        $order->items()->create([
+
+        foreach ($mapper->getCustomizations() as $customization) {
+            $price = $price->sum(
+                $customization->getOption()->getPriceObject()
+            );
+        }
+
+        return $order->items()->create([
             OrderItem::PRODUCT => $product->getId(),
             OrderItem::AMOUNT => $amount,
             OrderItem::CURRENCY => $price->getCurrency()->getId(),

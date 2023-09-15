@@ -23,7 +23,7 @@ class OrderItemFactory extends Factory
         return [
             OrderItem::CURRENCY => Currency::factory(),
             OrderItem::ORDER => Order::factory(),
-            OrderItem::PRICE => fake()->randomNumber(),
+            OrderItem::PRICE => fake()->numberBetween(0, 9999999),
             OrderItem::PRODUCT => Product::factory(),
             OrderItem::AMOUNT => fake()->numberBetween(0, 5000),
         ];

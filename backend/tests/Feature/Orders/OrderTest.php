@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\Orders;
 
+use App\Http\Controllers\Api\V1\Orders\OrderController;
 use App\Http\Requests\Api\V1\Orders\StoreRequest;
 use App\Http\Resources\Api\V1\Orders\Shared;
 use App\Http\Resources\Api\V1\Orders\Stored;
+use App\Http\Resources\Api\V1\Shared\CustomizationResource;
+use App\Models\Currency;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
@@ -13,6 +16,8 @@ use App\Models\User;
 use App\Support\OrderStateDeterminer\Values\WaitingValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
@@ -22,6 +27,114 @@ class OrderTest extends TestCase
 {
     use RefreshDatabase;
     use LetsBeTrait;
+
+    // phpcs:ignore
+    public function test_the_added_price_for_customizations_need_to_get_stored_on_database_for_the_order_items(): void
+    {
+        list(
+            $customizedProduct,
+            $selectedOption,
+            $data
+        ) = $this->arrangeRequirements();
+
+        $item = $this->request($data)->json(join('.', [
+            Stored\PaginatorResource::DATA,
+            Shared\DataResource::ITEMS,
+            0,
+        ]));
+
+        $this->assertDatabaseHas(OrderItem::TABLE, [
+            OrderItem::ID => $item[Shared\ItemResource::ITEM_ID],
+            OrderItem::PRICE => $customizedProduct
+                ->getProduct()
+                ->getPriceObject()
+                ->sum($selectedOption->getPriceObject())
+                ->toInteger(),
+        ]);
+    }
+
+    // phpcs:ignore
+    public function test_the_added_customizations_price_need_to_get_added_and_stored_to_order_item_price(): void
+    {
+        [
+            $customizedProduct,
+            $selectedOption,
+            $data,
+        ] = $this->arrangeRequirements(createCurrency());
+
+        $storedOrder = $this->request($data)->json(join('.', [
+            Stored\PaginatorResource::DATA,
+        ]));
+
+        $orderTotalPrice = $storedOrder[Shared\DataResource::TOTAL_PRICE];
+
+        $this->assertSame(
+            $customizedProduct
+                ->getProduct()
+                ->getPriceObject()
+                ->sum($selectedOption->getPriceObject())
+                ->represent(),
+            $orderTotalPrice,
+        );
+    }
+
+    // phpcs:ignore
+    public function test_when_storing_an_order_the_customization_should_store_too(): void
+    {
+        list(
+            $customizedProduct,
+            $selectedOption,
+            $data
+        ) = $this->arrangeRequirements();
+
+        $itemCustomizations = $this->request($data)->json(join('.', [
+            Stored\PaginatorResource::DATA,
+            Shared\DataResource::ITEMS,
+            0,
+            Shared\ItemResource::CUSTOMIZATIONS,
+        ]));
+
+        $customization = $customizedProduct->getCustomization();
+        $resource = CustomizationResource::class;
+        $this->assertSame([[
+            $resource::CUSTOMIZATION_ID => $customization->getId(),
+            $resource::CUSTOMIZATION_NAME => $customization->getName(),
+            $resource::SELECTED_OPTION_ID => $selectedOption->getId(),
+            $resource::SELECTED_OPTION_NAME => $selectedOption->getName(),
+        ]], $itemCustomizations);
+    }
+
+    private function arrangeRequirements(Currency $currency = null): array
+    {
+        $this->withoutExceptionHandling();
+        $this->login();
+        $customizedProduct = addCustomizationToProduct(
+            product: createProduct([
+                Product::CURRENCY => $currency ??= createCurrency(),
+            ]),
+            customization: 'Size',
+            options: ['small', 'medium', 'large'],
+            currency: $currency
+        );
+        $deliveryType = createDeliveryType();
+        $selectedOption = $customizedProduct->getOption(2);
+        $data = [
+            StoreRequest::PRODUCTS => [
+                [
+                    StoreRequest::PRODUCT_ID => $customizedProduct
+                        ->getProduct()
+                        ->getId(),
+                    StoreRequest::CUSTOMIZATIONS => [[
+                        StoreRequest::OPTION_ID => $selectedOption->getId(),
+                    ]],
+                    StoreRequest::AMOUNT => 1,
+                ],
+            ],
+            StoreRequest::DELIVERY_TYPE => $deliveryType->getId(),
+        ];
+
+        return [$customizedProduct, $selectedOption, $data];
+    }
 
     public function test_the_order_type_needs_to_get_set(): void
     {
@@ -117,6 +230,70 @@ class OrderTest extends TestCase
     public static function dataProviderForValidationTest(): array
     {
         return [
+            'the specified customization should exist in system' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                        StoreRequest::CUSTOMIZATIONS => [[
+                            StoreRequest::OPTION_ID => 1,
+                        ]],
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
+            'the specified customization should be integer' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                        StoreRequest::CUSTOMIZATIONS => [[
+                            StoreRequest::OPTION_ID => 'some invalid value',
+                        ]],
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
+            'each customization item should contain required item' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                        StoreRequest::CUSTOMIZATIONS => [[]],
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
+            'customization list should contain at least one item' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                        StoreRequest::CUSTOMIZATIONS => [],
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
+            'all customizations need to be in their related field' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                        StoreRequest::CUSTOMIZATIONS => 'not array field',
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
             'delivery type needs to exist in system' => [[
                 StoreRequest::PRODUCTS => [
                     [

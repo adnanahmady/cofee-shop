@@ -52,12 +52,13 @@ class TotalPriceTest extends TestCase
         $totalPrice->addPrice($price1);
         $totalPrice->addPrice($price2);
 
+        preg_match(
+            sprintf('/\d+\.\d{%s}/', $eur->getDecimalPlaces()),
+            $totalPrice->getPrice(),
+            $prices
+        );
         $this->assertSame(
-            sprintf(
-                '%s %s',
-                $eur->getCode(),
-                round($totalPrice->getPrice(), $eur->getDecimalPlaces())
-            ),
+            sprintf('%s %s', $eur->getCode(), $prices[0]),
             $totalPrice->represent()
         );
     }
@@ -107,12 +108,18 @@ class TotalPriceTest extends TestCase
 
     private function getEurCurrency(): Currency
     {
-        return createCurrency([Currency::CODE => 'EUR']);
+        return createCurrency([
+            Currency::CODE => 'EUR',
+            Currency::DECIMAL_PLACES => 2,
+        ]);
     }
 
     private function getIrrCurrency(): Currency
     {
-        return createCurrency([Currency::CODE => 'IRR']);
+        return createCurrency([
+            Currency::CODE => 'IRR',
+            Currency::DECIMAL_PLACES => 0,
+        ]);
     }
 
     private function getUsdCurrency(): Collection|Currency

@@ -17,9 +17,19 @@ class OrderItemRepository
         $this->productRepository = new ProductRepository();
     }
 
-    public function getCustomizations(OrderItem $item): Collection
+    public function getOptions(OrderItem $item): Collection
     {
-        return $this->productRepository->getCustomizations($item->product);
+        return $item->options;
+    }
+
+    public function getOptionsWithCustomization(OrderItem $item): Collection
+    {
+        return $item->load('options.customization')->options;
+    }
+
+    public function addOption(OrderItem $orderItem, int $optionId): void
+    {
+        $orderItem->options()->attach($optionId);
     }
 
     public function delete(OrderItem $orderItem): bool|null

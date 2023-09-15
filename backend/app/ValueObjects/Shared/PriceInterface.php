@@ -19,4 +19,8 @@ interface PriceInterface
     public function isEqual($price): bool;
 
     public function sum(PriceInterface $price): PriceInterface;
+
+    public function toInteger(): int;
+
+    public function toNormalForm(): int|float;
 }

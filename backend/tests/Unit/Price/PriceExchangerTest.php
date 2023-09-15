@@ -12,6 +12,21 @@ use Tests\TestCase;
 
 class PriceExchangerTest extends TestCase
 {
+    // phpcs:ignore
+    public function test_it_should_exchange_from_a_currency_to_another_correctly(): void
+    {
+        $irr = createCurrency([
+            Currency::CODE => 'irr',
+            Currency::DECIMAL_PLACES => 3,
+        ]);
+
+        $price = new PriceObject($p = 1234, $irr);
+
+        $newPrice = $this->exchange($price, $irr);
+
+        $this->assertSame($p, $newPrice->getPrice());
+    }
+
     public function test_zero_price_is_just_not_exchanged(): void
     {
         $irr = $this->getIrrCurrency();

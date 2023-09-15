@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\Currency;
 use App\Models\Customization;
 use App\Models\Option;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use Tests\Helpers\Types\CustomizedProductDto;
 
 if (!function_exists('addCustomizationToProduct')) {
     /**
@@ -13,24 +15,28 @@ if (!function_exists('addCustomizationToProduct')) {
      * @param Product       $product       product
      * @param string        $customization customization name
      * @param array<string> $options       option names
-     *
-     * @return array<Product, Customization>
      */
     function addCustomizationToProduct(
         Product $product,
         string $customization,
-        array $options
-    ): array {
+        array $options,
+        Currency $currency = null
+    ): CustomizedProductDto {
         $repository = new ProductRepository();
         $customization = createCustomization([
             Customization::NAME => $customization,
         ]);
-        array_map(fn ($option) => createOption([
+        $createdOptions = array_map(fn ($option) => createOption([
             Option::NAME => $option,
             Option::CUSTOMIZATION => $customization,
+            Option::CURRENCY => $currency ?? Currency::factory(),
         ]), $options);
         $repository->addCustomization($product, $customization);
 
-        return [$product, $customization];
+        return new CustomizedProductDto(
+            product: $product,
+            customization: $customization,
+            options: $createdOptions
+        );
     }
 }

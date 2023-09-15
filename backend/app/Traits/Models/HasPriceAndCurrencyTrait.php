@@ -5,6 +5,8 @@ namespace App\Traits\Models;
 use App\ExceptionMessages\RequiredRelationMessage;
 use App\Exceptions\Models\UnavailableRelationException;
 use App\Models\Currency;
+use App\Support\Converters\PriceDeNormalizer;
+use App\Support\Converters\PriceNormalizer;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait HasPriceAndCurrencyTrait
@@ -27,18 +29,12 @@ trait HasPriceAndCurrencyTrait
             new RequiredRelationMessage('currency')
         );
 
-        $this->attributes[$this->getPriceName()] = $this
-            ->injectDecimals($price);
-    }
+        $converter = new PriceDeNormalizer(
+            price: $price,
+            decimalPlaces: $this->getDecimalPlaces()
+        );
 
-    private function injectDecimals(float|int $price): float
-    {
-        return round($price * $this->getDecimalIdentifier());
-    }
-
-    private function getDecimalIdentifier(): int
-    {
-        return pow(10, $this->getDecimalPlaces());
+        $this->attributes[$this->getPriceName()] = $converter->denormalize();
     }
 
     private function getDecimalPlaces(): int|null
@@ -56,20 +52,14 @@ trait HasPriceAndCurrencyTrait
      */
     public function getPriceAttribute(): int|float
     {
-        $price = $this->extractDecimals();
+        $price = $this->attributes[$this->getPriceName()];
 
-        if (0 === $this->getDecimalPlaces()) {
-            return (int) $price;
-        }
+        $deNormalizer = new PriceNormalizer(
+            price: $price,
+            decimalPlaces: $this->getDecimalPlaces()
+        );
 
-        return $price;
-    }
-
-    private function extractDecimals(): int|float
-    {
-        $value = $this->attributes[$this->getPriceName()];
-
-        return $value / $this->getDecimalIdentifier();
+        return $deNormalizer->normalize();
     }
 
     public function currency(): BelongsTo

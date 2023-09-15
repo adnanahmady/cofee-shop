@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             Product::CURRENCY => Currency::factory(),
             Product::AMOUNT => fake()->numberBetween(5, 20),
             Product::NAME => fake()->name(),
-            Product::PRICE => fake()->randomNumber(),
+            Product::PRICE => fake()->numberBetween(0, 99999),
         ];
     }
 }

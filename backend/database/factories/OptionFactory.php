@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
 use App\Models\Customization;
 use App\Models\Option;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,6 +22,9 @@ class OptionFactory extends Factory
         return [
             Option::NAME => fake()->name(),
             Option::CUSTOMIZATION => Customization::factory(),
+            Option::AMOUNT => fake()->numberBetween(1, 9999999),
+            Option::CURRENCY => Currency::factory(),
+            Option::PRICE => fake()->numberBetween(0, 99999),
         ];
     }
 }

@@ -48,7 +48,7 @@ class ProductTest extends TestCase
         createProduct($fields);
 
         $this->assertDatabaseHas(Product::TABLE, [
-            Product::PRICE => round(
+            Product::PRICE => (int) (
                 $price * pow(10, $currency->getDecimalPlaces())
             ),
         ]);

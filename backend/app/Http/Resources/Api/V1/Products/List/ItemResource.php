@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Api\V1\Products\List;
 
-use App\Http\Resources\Api\V1\Shared\CustomizationResource;
 use App\Http\Resources\Api\V1\SharedContracts\CustomizationContract;
 use App\Models\Customization;
 use App\Models\Product;

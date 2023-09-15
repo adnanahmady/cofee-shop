@@ -20,8 +20,11 @@ class PriceExchanger
     public function exchange(Currency $to): PriceInterface
     {
         $exchanges = $this->exchanges;
-
         $code = $this->price->getCurrency()->getCode();
+
+        if ($code === $to->getCode()) {
+            return $this->price;
+        }
         $basedOnBase = $this->price->getPrice() * $exchanges->getRate($code);
         $exchanged = $basedOnBase / $exchanges->getRate($to->getCode());
 

@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Products;
 
+use App\Http\Resources\Api\V1\Products\List;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Resources\Api\V1\Products\List;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use App\Http\Resources\Api\V1\Shared;
 
 class ListTest extends TestCase
 {
@@ -19,7 +18,7 @@ class ListTest extends TestCase
     // phpcs:ignore
     public function test_product_customization_options_should_be_shown_as_expected(): void
     {
-        [, $customization] = addCustomizationToProduct(
+        $customizedProduct = addCustomizationToProduct(
             createProduct(),
             'Size',
             $options = ['small', 'medium', 'large'],
@@ -31,8 +30,10 @@ class ListTest extends TestCase
         );
 
         $this->assertSame([[
-            Shared\CustomizationResource::NAME => $customization->getName(),
-            Shared\CustomizationResource::OPTIONS => $options,
+            List\CustomizationResource::NAME => $customizedProduct
+                ->getCustomization()
+                ->getName(),
+            List\CustomizationResource::OPTIONS => $options,
         ]], $item[List\ItemResource::CUSTOMIZATIONS]);
     }
 

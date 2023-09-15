@@ -6,6 +6,10 @@ use App\Enums\AbilityEnum;
 use App\Http\Requests\Api\V1\Orders\GetListRequest;
 use App\Http\Resources\Api\V1\Orders\List;
 use App\Http\Resources\Api\V1\Orders\Shared;
+use App\Http\Resources\Api\V1\Shared\{
+    DeliveryTypeResource,
+    CustomizationResource
+};
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
@@ -18,10 +22,6 @@ use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use App\Http\Resources\Api\V1\Shared\{
-    DeliveryTypeResource,
-    CustomizationResource
-};
 
 class GetListTest extends TestCase
 {
@@ -35,16 +35,17 @@ class GetListTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $user = $this->login();
-        [$product, $customization] = addCustomizationToProduct(
+        $customizedProduct = addCustomizationToProduct(
             product: createProduct(),
             customization: 'Size',
-            options: $options = ['small', 'large'],
+            options: ['small', 'large'],
         );
+        $selectedOption = $customizedProduct->getOption(1);
         $order = createOrder(fields: [Order::USER => $user]);
         createOrderItem([
             OrderItem::ORDER => $order,
-            OrderItem::PRODUCT => $product,
-        ]);
+            OrderItem::PRODUCT => $customizedProduct->getProduct(),
+        ])->options()->attach($selectedOption->getId());
 
         $itemCustomizations = $this->request()->json(join('.', [
             List\PaginatorCollection::DATA,
@@ -54,9 +55,13 @@ class GetListTest extends TestCase
             Shared\ItemResource::CUSTOMIZATIONS,
         ]));
 
+        $customization = $customizedProduct->getCustomization();
+        $resource = CustomizationResource::class;
         $this->assertSame([[
-            CustomizationResource::NAME => $customization->getName(),
-            CustomizationResource::OPTIONS => $options,
+            $resource::CUSTOMIZATION_ID => $customization->getId(),
+            $resource::CUSTOMIZATION_NAME => $customization->getName(),
+            $resource::SELECTED_OPTION_ID => $selectedOption->getId(),
+            $resource::SELECTED_OPTION_NAME => $selectedOption->getName(),
         ]], $itemCustomizations);
     }
 
@@ -76,6 +81,11 @@ class GetListTest extends TestCase
         $this->assertIsString($order[DeliveryTypeResource::NAME]);
     }
 
+    /**
+     * The pagination process is being handled by
+     * the framework itself, therefore there is no
+     * need to use constant for referring the resource.
+     */
     public function test_default_value_for_page_should_be_expected(): void
     {
         $this->withoutExceptionHandling();

@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api\V1\Orders\Shared;
 
 use App\Http\Resources\Api\V1\Shared\CustomizationResource;
 use App\Http\Resources\Api\V1\SharedContracts\CustomizationContract;
-use App\Models\Customization;
+use App\Models\Option;
 use App\Models\OrderItem;
 use App\Repositories\OrderItemRepository;
 use App\Support\Calculators\TotalPrice;
@@ -45,8 +45,8 @@ class ItemResource extends JsonResource implements CustomizationContract
                 ->getProduct($this->resource)->getName(),
             self::AMOUNT => $this->resource->getAmount(),
             self::CUSTOMIZATIONS => $this->orderItemRepository
-                ->getCustomizations($this->resource)
-                ->map(fn (Customization $c) => new CustomizationResource($c)),
+                ->getOptionsWithCustomization($this->resource)
+                ->map(fn (Option $c) => new CustomizationResource($c)),
             self::UNIT_PRICE => $this->resource
                 ->getPriceObject()->represent(),
             self::PRICE => $this->totalPrice->addPrices(

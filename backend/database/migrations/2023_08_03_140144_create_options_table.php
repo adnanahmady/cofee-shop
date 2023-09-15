@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Currency;
 use App\Models\Customization;
 use App\Models\Option;
 use Illuminate\Database\Migrations\Migration;
@@ -16,6 +17,9 @@ return new class () extends Migration {
             $table->id(Option::ID);
             $table->string(Option::NAME);
             $table->foreignIdFor(Customization::class, Option::CUSTOMIZATION);
+            $table->unsignedBigInteger(Option::AMOUNT);
+            $table->unsignedBigInteger(Option::PRICE);
+            $table->foreignIdFor(Currency::class, Option::CURRENCY);
             $table->timestamps();
         });
     }
@@ -30,6 +34,7 @@ return new class () extends Migration {
                 Customization::class,
                 Option::CUSTOMIZATION
             );
+            $table->dropForeignIdFor(Currency::class, Option::CURRENCY);
         });
         Schema::dropIfExists(Option::TABLE);
     }

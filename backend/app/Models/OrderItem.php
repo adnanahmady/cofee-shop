@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Fields\AmountContract;
 use App\Contracts\Models\Fields\IdContract;
+use App\Contracts\Models\OrderItemOptionContract;
 use App\Traits\Models\Fields\HasAmountTrait;
 use App\Traits\Models\Fields\HasIdTrait;
 use App\Traits\Models\HasPriceAndCurrencyTrait;
@@ -11,6 +12,7 @@ use App\Traits\Models\HasPriceObjectPropertyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class OrderItem extends Model implements
     IdContract,
@@ -67,5 +69,13 @@ class OrderItem extends Model implements
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function options(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Option::class,
+            OrderItemOptionContract::TABLE,
+        );
     }
 }
