@@ -33,11 +33,11 @@ class OrderTest extends TestCase
     // phpcs:ignore
     public function test_the_added_price_for_customizations_need_to_get_stored_on_database_for_the_order_items(): void
     {
-        list(
+        [
             $customizedProduct,
             $selectedOption,
             $data
-        ) = $this->arrangeRequirements();
+        ] = $this->arrangeRequirements();
 
         $item = $this->request($data)->json(join('.', [
             Stored\PaginatorResource::DATA,
@@ -83,11 +83,11 @@ class OrderTest extends TestCase
     // phpcs:ignore
     public function test_when_storing_an_order_the_customization_should_store_too(): void
     {
-        list(
+        [
             $customizedProduct,
             $selectedOption,
             $data
-        ) = $this->arrangeRequirements();
+        ] = $this->arrangeRequirements();
 
         $itemCustomizations = $this->request($data)->json(join('.', [
             Stored\PaginatorResource::DATA,
