@@ -3,6 +3,7 @@
 namespace Tests\Feature\Orders;
 
 use App\Enums\AbilityEnum;
+use App\Http\Controllers\Api\V1\Orders\OrderController;
 use App\Http\Requests\Api\V1\Orders\GetListRequest;
 use App\Http\Resources\Api\V1\Orders\List;
 use App\Http\Resources\Api\V1\Orders\Shared;
@@ -19,10 +20,14 @@ use App\Support\Calculators\TotalPrice;
 use App\Support\Values\Pagination\PerPageValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
+#[CoversClass(OrderController::class)]
+#[CoversFunction('index')]
 class GetListTest extends TestCase
 {
     use RefreshDatabase;

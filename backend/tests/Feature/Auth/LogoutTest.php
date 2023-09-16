@@ -2,12 +2,17 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 use App\Http\Resources\Api\V1\Auth\Logout;
 
+#[CoversClass(LogoutController::class)]
+#[CoversFunction('logout')]
 class LogoutTest extends TestCase
 {
     use RefreshDatabase;

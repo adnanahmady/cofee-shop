@@ -3,6 +3,7 @@
 namespace Tests\Feature\Products;
 
 use App\Enums\AbilityEnum;
+use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Requests\Api\V1\Products\StoreRequest;
 use App\Http\Resources\Api\V1\Products\Store;
 use App\Models\Ability;
@@ -10,10 +11,14 @@ use App\Models\User;
 use App\ValueObjects\Shared\PriceObject;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
+#[CoversClass(ProductController::class)]
+#[CoversFunction('store')]
 class CreateTest extends TestCase
 {
     use RefreshDatabase;

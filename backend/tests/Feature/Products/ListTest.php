@@ -2,14 +2,19 @@
 
 namespace Tests\Feature\Products;
 
+use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Resources\Api\V1\Products\List;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
+#[CoversClass(ProductController::class)]
+#[CoversFunction('index')]
 class ListTest extends TestCase
 {
     use RefreshDatabase;

@@ -3,6 +3,7 @@
 namespace Tests\Feature\OrderStatuses;
 
 use App\Enums\AbilityEnum;
+use App\Http\Controllers\Api\V1\Orders\StatusController;
 use App\Http\Requests\Api\V1\OrderStatuses\UpdateRequest;
 use App\Models\OrderItem;
 use App\Notifications\StatusChangeNotification;
@@ -10,6 +11,8 @@ use App\Repositories\OrderRepository;
 use Illuminate\Notifications\SendQueuedNotifications;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use App\Http\Resources\Api\V1\Orders\{Updated, Shared};
 use App\Models\Order;
@@ -23,6 +26,8 @@ use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
+#[CoversClass(StatusController::class)]
+#[CoversFunction('update')]
 class UpdateTest extends TestCase
 {
     use RefreshDatabase;

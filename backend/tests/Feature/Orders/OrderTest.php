@@ -23,6 +23,8 @@ use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
 
+#[CoversClass(OrderController::class)]
+#[CoversFunction('store')]
 class OrderTest extends TestCase
 {
     use RefreshDatabase;

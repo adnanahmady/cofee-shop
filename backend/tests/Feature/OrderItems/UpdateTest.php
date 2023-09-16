@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\OrderItems;
 
+use App\Http\Controllers\Api\V1\Orders\OrderItemController;
 use App\Http\Requests\Api\V1\OrderItems\UpdateRequest;
 use App\Http\Resources\Api\V1\OrderItems;
 use App\Models\OrderItem;
@@ -10,10 +11,14 @@ use App\Models\User;
 use App\Repositories\ProductRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
+#[CoversClass(OrderItemController::class)]
+#[CoversFunction('update')]
 class UpdateTest extends TestCase
 {
     use RefreshDatabase;

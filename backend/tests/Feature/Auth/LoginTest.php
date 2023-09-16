@@ -2,15 +2,20 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Resources\Api\V1\Auth\Login;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
+#[CoversClass(LoginController::class)]
+#[CoversFunction('login')]
 class LoginTest extends TestCase
 {
     use RefreshDatabase;

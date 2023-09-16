@@ -2,14 +2,19 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Http\Controllers\Api\V1\Auth\RegistrationController;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Resources\Api\V1\Auth\Register;
 use App\ValueObjects\Users\NameObject;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
+#[CoversClass(RegistrationController::class)]
+#[CoversFunction('register')]
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;

@@ -2,15 +2,20 @@
 
 namespace Tests\Feature\DeliveryTypes;
 
+use App\Http\Controllers\Api\V1\DeliveryTypeController;
 use App\Http\Resources\Api\V1\OrderTypes\List\DataCollection;
 use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
 use App\Models\DeliveryType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
+#[CoversClass(DeliveryTypeController::class)]
+#[CoversFunction('index')]
 class ListTest extends TestCase
 {
     use RefreshDatabase;
