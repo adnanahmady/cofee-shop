@@ -16,7 +16,7 @@ interface PriceInterface
 
     public function isInSameCurrency(PriceInterface $price): bool;
 
-    public function isEqual($price): bool;
+    public function isEqual(PriceInterface $price): bool;
 
     public function sum(PriceInterface $price): PriceInterface;
 

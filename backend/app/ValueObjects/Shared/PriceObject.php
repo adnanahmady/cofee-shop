@@ -89,7 +89,7 @@ class PriceObject implements PriceInterface
         return $this->currency->getId() === $price->getCurrency()->getId();
     }
 
-    public function isEqual($price): bool
+    public function isEqual(PriceInterface $price): bool
     {
         return $this->getPrice() === $price->getPrice()
             && $this->isInSameCurrency($price);

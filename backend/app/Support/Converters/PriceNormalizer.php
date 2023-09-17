@@ -53,7 +53,7 @@ class PriceNormalizer
         return rtrim(str_replace('.', '', $this->price), '0');
     }
 
-    private function separateDecimalPart($price): array
+    private function separateDecimalPart(string $price): array
     {
         $price = str_split($price);
         array_splice(
@@ -66,7 +66,7 @@ class PriceNormalizer
         return $price;
     }
 
-    private function getSeparationPoint($price): int
+    private function getSeparationPoint(array $price): int
     {
         return count($price) - $this->decimalPlaces;
     }
