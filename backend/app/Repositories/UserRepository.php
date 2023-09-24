@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository
 {
+    public function findById(int $id): User|null
+    {
+        return User::find($id);
+    }
+
     public function isAbleTo(User $user, AbilityEnum $ability): bool
     {
         return $user->tokenCan($ability->slugify());
