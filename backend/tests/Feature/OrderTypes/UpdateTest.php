@@ -26,6 +26,17 @@ class UpdateTest extends TestCase
     use RefreshDatabase;
     use LetsBeTrait;
 
+    public function test_selected_order_should_be_number(): void
+    {
+        $this->login([AbilityEnum::SetOrderType->slugify()]);
+        $deliveryType = createDeliveryType();
+        $data = $this->prepareData($deliveryType);
+
+        $response = $this->request(data: $data, order: 'a');
+
+        $response->assertNotFound();
+    }
+
     public function test_it_should_show_delivery_type_as_expected(): void
     {
         $user = $this->login();
@@ -72,7 +83,7 @@ class UpdateTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_a_customer_can_only_update_its_own_order(): void
+    public function test_non_managers_cant_update_users_order(): void
     {
         $this->login();
         $deliveryType = createDeliveryType();
