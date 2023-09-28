@@ -17,10 +17,6 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     */
-    public function boot(): void
-    {
-    }
+    /** Register any authentication / authorization services. */
+    public function boot(): void {}
 }

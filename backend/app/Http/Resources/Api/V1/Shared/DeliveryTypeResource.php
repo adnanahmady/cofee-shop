@@ -11,7 +11,9 @@ class DeliveryTypeResource extends JsonResource
     public const ID = 'id';
     public const NAME = 'name';
 
-    /** @var DeliveryType */
+    /**
+     * @var DeliveryType
+     */
     public $resource;
 
     public function toArray(Request $request): array

@@ -4,9 +4,7 @@ namespace App\ExceptionMessages;
 
 class InvalidEmailMessage implements ViolationMessageInterface
 {
-    public function __construct(readonly private string $email)
-    {
-    }
+    public function __construct(readonly private string $email) {}
 
     public function getMessage(): string
     {

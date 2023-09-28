@@ -11,9 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait HasPriceAndCurrencyTrait
 {
-    /**
-     * Price field name.
-     */
+    /** Price field name. */
     abstract protected function getPriceName(): string;
 
     /**

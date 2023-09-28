@@ -16,8 +16,7 @@ class UpdateService
         private readonly UpdateRequest $request,
         private readonly UserRepository $userRepository,
         private readonly OrderRepository $orderRepository,
-    ) {
-    }
+    ) {}
 
     public function update(Order $order): Order
     {

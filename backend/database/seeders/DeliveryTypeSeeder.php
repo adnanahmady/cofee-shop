@@ -9,12 +9,9 @@ class DeliveryTypeSeeder extends Seeder
 {
     public function __construct(
         private readonly DeliveryTypeRepository $deliveryTypeRepository
-    ) {
-    }
+    ) {}
 
-    /**
-     * Run the database seeds.
-     */
+    /** Run the database seeds. */
     public function run(): void
     {
         $this->deliveryTypeRepository->create(name: 'get at shop');

@@ -5,6 +5,8 @@ namespace Tests\Feature\OrderTypes;
 use App\Enums\AbilityEnum;
 use App\Http\Controllers\Api\V1\Orders\TypeController;
 use App\Http\Requests\Api\V1\OrderTypes\UpdateRequest;
+use App\Http\Resources\Api\V1\Orders\{Shared, Updated};
+use App\Http\Resources\Api\V1\Shared as GeneralShared;
 use App\Interfaces\IdInterface;
 use App\Models\DeliveryType;
 use App\Models\Order;
@@ -16,8 +18,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use App\Http\Resources\Api\V1\Orders\{Updated, Shared};
-use App\Http\Resources\Api\V1\Shared as GeneralShared;
 
 #[CoversClass(TypeController::class)]
 #[CoversFunction('update')]

@@ -11,7 +11,9 @@ class RegisteredResource extends JsonResource
 {
     public const DATA = 'data';
 
-    /** @var User */
+    /**
+     * @var User
+     */
     public $resource;
 
     /**

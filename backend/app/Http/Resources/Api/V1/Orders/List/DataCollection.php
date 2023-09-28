@@ -11,7 +11,7 @@ class DataCollection extends ResourceCollection
     public function toArray(Request $request): Collection
     {
         return $this->collection->map(
-            fn ($resource) => new OrderResource($resource)
+            fn($resource) => new OrderResource($resource)
         );
     }
 }

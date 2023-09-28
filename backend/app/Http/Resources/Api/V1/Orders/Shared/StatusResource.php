@@ -11,7 +11,9 @@ class StatusResource extends JsonResource
     public const ID = 'id';
     public const NAME = 'name';
 
-    /** @var OrderStatus */
+    /**
+     * @var OrderStatus
+     */
     public $resource;
 
     public function toArray(Request $request): array

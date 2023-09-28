@@ -12,9 +12,7 @@ class LoginRequest extends FormRequest
     public const PASSWORD = 'password';
     public const AS = 'as';
 
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    /** Determine if the user is authorized to make this request. */
     public function authorize(): bool
     {
         return true;

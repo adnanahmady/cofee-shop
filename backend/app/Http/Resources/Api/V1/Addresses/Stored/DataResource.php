@@ -15,7 +15,9 @@ class DataResource extends JsonResource
     public const POSTAL_CODE = 'postal_code';
     public const DESCRIPTION = 'description';
 
-    /** @var Address */
+    /**
+     * @var Address
+     */
     public $resource;
 
     public function toArray(Request $request): array

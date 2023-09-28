@@ -10,8 +10,7 @@ abstract class AbstractState implements DeterminerInterface
 {
     public function __construct(
         protected readonly Determiner $determiner
-    ) {
-    }
+    ) {}
 
     public function determine(): ValueInterface
     {

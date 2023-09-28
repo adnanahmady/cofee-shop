@@ -12,7 +12,9 @@ class MetaResource extends JsonResource
 {
     public const USER = 'user';
 
-    /** @var User */
+    /**
+     * @var User
+     */
     public $resource;
 
     public function __construct($resource)

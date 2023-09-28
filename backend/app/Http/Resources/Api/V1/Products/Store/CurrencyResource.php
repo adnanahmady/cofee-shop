@@ -12,7 +12,9 @@ class CurrencyResource extends JsonResource
     public const NAME = 'name';
     public const CODE = 'code';
 
-    /** @var Currency */
+    /**
+     * @var Currency
+     */
     public $resource;
 
     /**

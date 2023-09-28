@@ -6,9 +6,7 @@ class ProductsIterator implements ProductIteratorInterface
 {
     private int $index = 0;
 
-    public function __construct(readonly private array $data)
-    {
-    }
+    public function __construct(readonly private array $data) {}
 
     public function current(): ProductMapperInterface
     {

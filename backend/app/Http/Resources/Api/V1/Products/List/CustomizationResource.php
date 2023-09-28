@@ -13,7 +13,9 @@ class CustomizationResource extends JsonResource
     public const NAME = 'name';
     public const OPTIONS = 'options';
 
-    /** @var Customization */
+    /**
+     * @var Customization
+     */
     public $resource;
     private readonly CustomizationRepository $customizationRepository;
 
@@ -29,7 +31,7 @@ class CustomizationResource extends JsonResource
             self::NAME => $this->resource->getName(),
             self::OPTIONS => $this->customizationRepository
                 ->getOptions($this->resource)
-                ->map(fn (Option $o) => $o->getName()),
+                ->map(fn(Option $o) => $o->getName()),
         ];
     }
 }

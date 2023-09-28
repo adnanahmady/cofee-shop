@@ -9,9 +9,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
+    /** Run the migrations. */
     public function up(): void
     {
         Schema::create(OrderItem::TABLE, function (Blueprint $table): void {
@@ -25,9 +23,7 @@ return new class () extends Migration {
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    /** Reverse the migrations. */
     public function down(): void
     {
         Schema::table(OrderItem::TABLE, function (Blueprint $table): void {

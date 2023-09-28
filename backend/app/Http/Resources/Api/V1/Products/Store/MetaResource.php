@@ -9,7 +9,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class MetaResource extends JsonResource
 {
     public const CURRENCY = 'currency';
-    /** @var Product */
+    /**
+     * @var Product
+     */
     public $resource;
 
     /**

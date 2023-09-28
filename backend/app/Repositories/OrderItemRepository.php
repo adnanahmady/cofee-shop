@@ -46,6 +46,7 @@ class OrderItemRepository
             return $removed;
         } catch (InvalidOrderItemAmountException $e) {
             DB::rollBack();
+
             throw $e;
         }
     }
@@ -67,6 +68,7 @@ class OrderItemRepository
             return $orderItem->fresh();
         } catch (InvalidOrderItemAmountException $e) {
             DB::rollBack();
+
             throw $e;
         }
     }

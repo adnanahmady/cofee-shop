@@ -8,9 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration implements ProductCustomizationContract {
-    /**
-     * Run the migrations.
-     */
+    /** Run the migrations. */
     public function up(): void
     {
         Schema::create(self::TABLE, function (Blueprint $table): void {
@@ -21,9 +19,7 @@ return new class () extends Migration implements ProductCustomizationContract {
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    /** Reverse the migrations. */
     public function down(): void
     {
         Schema::table(self::TABLE, function (Blueprint $table): void {

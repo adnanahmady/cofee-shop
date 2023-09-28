@@ -5,24 +5,24 @@ namespace Tests\Feature\OrderStatuses;
 use App\Enums\AbilityEnum;
 use App\Http\Controllers\Api\V1\Orders\StatusController;
 use App\Http\Requests\Api\V1\OrderStatuses\UpdateRequest;
-use App\Models\OrderItem;
-use App\Notifications\StatusChangeNotification;
-use App\Repositories\OrderRepository;
-use Illuminate\Notifications\SendQueuedNotifications;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversFunction;
-use PHPUnit\Framework\Attributes\DataProvider;
-use App\Http\Resources\Api\V1\Orders\{Updated, Shared};
+use App\Http\Resources\Api\V1\Orders\{Shared, Updated};
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\User;
+use App\Notifications\StatusChangeNotification;
+use App\Repositories\OrderRepository;
 use App\Repositories\OrderStatusRepository;
 use App\Support\OrderStateDeterminer\Values\PreparationValue;
 use App\Support\Values\ValueInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\SendQueuedNotifications;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
 
@@ -43,7 +43,7 @@ class UpdateTest extends TestCase
 
         Queue::assertPushed(
             SendQueuedNotifications::class,
-            fn (SendQueuedNotifications $job) => (
+            fn(SendQueuedNotifications $job) => (
                 $job->notification::class === StatusChangeNotification::class
             )
         );

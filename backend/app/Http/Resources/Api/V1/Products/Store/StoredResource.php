@@ -13,7 +13,9 @@ class StoredResource extends JsonResource
     public const DATA = 'data';
     public const META = 'meta';
 
-    /** @var Product */
+    /**
+     * @var Product
+     */
     public $resource;
 
     /**

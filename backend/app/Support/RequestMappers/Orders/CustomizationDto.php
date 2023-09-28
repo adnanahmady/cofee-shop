@@ -8,8 +8,7 @@ final class CustomizationDto
 {
     public function __construct(
         private readonly Option $option,
-    ) {
-    }
+    ) {}
 
     public function getOption(): Option
     {

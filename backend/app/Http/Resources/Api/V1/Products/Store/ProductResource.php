@@ -13,7 +13,9 @@ class ProductResource extends JsonResource
     public const AMOUNT = 'amount';
     public const PRICE = 'price';
 
-    /** @var Product */
+    /**
+     * @var Product
+     */
     public $resource;
 
     /**

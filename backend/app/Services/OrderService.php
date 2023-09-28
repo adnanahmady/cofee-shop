@@ -13,8 +13,7 @@ class OrderService
     public function __construct(
         private readonly OrderRepository $orderRepository,
         private readonly UserRepository $userRepository
-    ) {
-    }
+    ) {}
 
     public function getPaginated(
         User $user,

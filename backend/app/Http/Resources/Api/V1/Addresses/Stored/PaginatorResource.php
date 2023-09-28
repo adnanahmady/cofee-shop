@@ -11,7 +11,9 @@ class PaginatorResource extends JsonResource
     public const DATA = 'data';
     public const META = 'meta';
 
-    /** @var Address */
+    /**
+     * @var Address
+     */
     public $resource;
 
     public function toArray(Request $request): array

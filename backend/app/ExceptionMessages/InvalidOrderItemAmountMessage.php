@@ -7,9 +7,7 @@ use App\Models\Product;
 
 class InvalidOrderItemAmountMessage implements ViolationMessageInterface
 {
-    public function __construct(readonly private Product $product)
-    {
-    }
+    public function __construct(readonly private Product $product) {}
 
     public function getMessage(): string
     {

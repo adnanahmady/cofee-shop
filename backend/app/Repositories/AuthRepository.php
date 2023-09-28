@@ -56,9 +56,9 @@ class AuthRepository
      * @param string $email    email
      * @param string $password password
      *
-     * @return array<string, User>
-     *
      * @throws InvalidCredentialException
+     *
+     * @return array<string, User>
      */
     public function loginByEmail(
         string $email,

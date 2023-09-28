@@ -16,7 +16,9 @@ class ItemResource extends JsonResource implements CustomizationContract
     public const PRICE = 'price';
     public const AMOUNT = 'amount';
 
-    /** @var Product */
+    /**
+     * @var Product
+     */
     public $resource;
     private readonly ProductRepository $productRepository;
 
@@ -35,7 +37,7 @@ class ItemResource extends JsonResource implements CustomizationContract
             self::AMOUNT => $this->resource->getAmount(),
             self::CUSTOMIZATIONS => $this->productRepository
                 ->getCustomizations($this->resource)
-                ->map(fn (Customization $c) => new CustomizationResource($c)),
+                ->map(fn(Customization $c) => new CustomizationResource($c)),
         ];
     }
 }

@@ -14,7 +14,9 @@ class CustomizationResource extends JsonResource
     public const SELECTED_OPTION_ID = 'selected_option_id';
     public const SELECTED_OPTION_NAME = 'selected_option_name';
 
-    /** @var Option */
+    /**
+     * @var Option
+     */
     public $resource;
     private readonly OptionRepository $optionRepository;
 

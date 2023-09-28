@@ -7,8 +7,7 @@ final class PriceDeNormalizer
     public function __construct(
         private readonly int|float $price,
         private readonly int $decimalPlaces,
-    ) {
-    }
+    ) {}
 
     public function denormalize(): int
     {

@@ -41,6 +41,7 @@ final class CustomizationsIterator implements \Iterator
             $message = new InvalidOffsetMessage(
                 offset: StoreRequest::OPTION_ID
             );
+
             throw new MissingOffsetException($message);
         }
     }

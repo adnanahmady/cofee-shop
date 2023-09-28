@@ -12,7 +12,9 @@ class UserResource extends JsonResource
     public const NAME = 'name';
     public const EMAIL = 'email';
 
-    /** @var User */
+    /**
+     * @var User
+     */
     public $resource;
 
     /**

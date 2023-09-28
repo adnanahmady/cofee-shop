@@ -11,7 +11,9 @@ class OrderResource extends DataResource
     public const ORDERED_AT = 'ordered_at';
     public const UPDATED_AT = 'updated_at';
 
-    /** @var Order */
+    /**
+     * @var Order
+     */
     public $resource;
 
     /**

@@ -4,9 +4,7 @@ namespace App\ExceptionMessages;
 
 class InvalidOffsetMessage implements ExceptionMessageInterface
 {
-    public function __construct(private readonly string $offset)
-    {
-    }
+    public function __construct(private readonly string $offset) {}
 
     public function getMessage(): string
     {

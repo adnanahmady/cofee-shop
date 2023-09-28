@@ -26,7 +26,7 @@ if (!function_exists('addCustomizationToProduct')) {
         $customization = createCustomization([
             Customization::NAME => $customization,
         ]);
-        $createdOptions = array_map(fn ($option) => createOption([
+        $createdOptions = array_map(fn($option) => createOption([
             Option::NAME => $option,
             Option::CUSTOMIZATION => $customization,
             Option::CURRENCY => $currency ?? Currency::factory(),

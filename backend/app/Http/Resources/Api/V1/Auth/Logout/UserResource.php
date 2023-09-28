@@ -11,7 +11,9 @@ class UserResource extends JsonResource
     public const ID = 'id';
     public const NAME = 'name';
 
-    /** @var User */
+    /**
+     * @var User
+     */
     public $resource;
 
     /**

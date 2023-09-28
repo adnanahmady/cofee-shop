@@ -4,9 +4,7 @@ namespace App\ExceptionMessages;
 
 class RequiredRelationMessage implements ExceptionMessageInterface
 {
-    public function __construct(readonly private string $relation)
-    {
-    }
+    public function __construct(readonly private string $relation) {}
 
     public function getMessage(): string
     {

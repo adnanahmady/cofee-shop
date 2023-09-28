@@ -19,7 +19,9 @@ class DataResource extends JsonResource
     public const STATUS = 'status';
     public const DELIVERY_TYPE = 'delivery_type';
 
-    /** @var Order */
+    /**
+     * @var Order
+     */
     public $resource;
     private OrderRepository $orderRepository;
     private TotalPriceInterface $totalPrice;
@@ -49,7 +51,7 @@ class DataResource extends JsonResource
 
                     return $item;
                 })
-                ->map(fn ($item) => new ItemResource($item)),
+                ->map(fn($item) => new ItemResource($item)),
             self::TOTAL_PRICE => $this->totalPrice->represent(),
             self::STATUS => new StatusResource(
                 $this->orderRepository->getStatus($this->resource),

@@ -7,8 +7,7 @@ class NameObject implements NameInterface
     public function __construct(
         private string $firstName,
         private string $lastName
-    ) {
-    }
+    ) {}
 
     public function getFirstName(): string
     {

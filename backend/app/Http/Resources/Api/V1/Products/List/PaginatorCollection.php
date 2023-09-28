@@ -13,7 +13,7 @@ class PaginatorCollection extends ResourceCollection
     {
         return [
             self::DATA => $this->collection->map(
-                fn ($resource) => new ItemResource($resource)
+                fn($resource) => new ItemResource($resource)
             ),
         ];
     }

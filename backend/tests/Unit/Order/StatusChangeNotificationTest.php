@@ -47,7 +47,7 @@ class StatusChangeNotificationTest extends TestCase
 
         $body = $notification->toMail($order)->render()->toHtml();
 
-        $assertContains = fn (string $needle) => $this
+        $assertContains = fn(string $needle) => $this
             ->assertStringContainsString($needle, $body);
         $assertContains('You order is updated');
         $assertContains(sprintf(

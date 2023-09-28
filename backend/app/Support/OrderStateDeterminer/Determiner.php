@@ -12,8 +12,7 @@ class Determiner implements DeterminerInterface
     public function __construct(
         public readonly ChoiceHolderInterface $choiceHolder,
         public readonly null|string $currentState
-    ) {
-    }
+    ) {}
 
     public function determine(): ValueInterface
     {

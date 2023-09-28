@@ -15,8 +15,7 @@ final class CustomizedProductDto
         private readonly Product $product,
         private readonly Customization $customization,
         private readonly array $options,
-    ) {
-    }
+    ) {}
 
     public function getProduct(): Product
     {
@@ -28,9 +27,7 @@ final class CustomizedProductDto
         return $this->customization;
     }
 
-    /**
-     * @return array<Option>
-     */
+    /** @return array<Option> */
     public function getOptions(): array
     {
         return $this->options;

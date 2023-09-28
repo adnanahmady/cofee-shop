@@ -19,7 +19,7 @@ class DataCollection extends ResourceCollection
     {
         return [
             self::DATA => $this->collection->map(
-                fn ($r) => new DeliveryTypeResource($r)
+                fn($r) => new DeliveryTypeResource($r)
             ),
         ];
     }

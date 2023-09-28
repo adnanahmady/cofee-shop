@@ -111,6 +111,7 @@ class OrderRepository
             return $order;
         } catch (InvalidOrderItemAmountException $e) {
             DB::rollBack();
+
             throw $e;
         }
     }

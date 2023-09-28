@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Orders\StoreRequest;
 use App\Http\Resources\Api\V1\Orders\Shared;
 use App\Http\Resources\Api\V1\Orders\Stored;
 use App\Http\Resources\Api\V1\Shared\CustomizationResource;
+use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
 use App\Models\Currency;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -21,7 +22,6 @@ use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\LetsBeTrait;
-use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
 
 #[CoversClass(OrderController::class)]
 #[CoversFunction('store')]
@@ -371,7 +371,7 @@ class OrderTest extends TestCase
     public function test_data_validation(array $data): void
     {
         $this->login();
-        $newPId = fn () => createProduct([Product::AMOUNT => 5])->getId();
+        $newPId = fn() => createProduct([Product::AMOUNT => 5])->getId();
 
         if (key_exists('makeProduct', $data)) {
             $data[StoreRequest::PRODUCTS] = array_map(
@@ -443,7 +443,7 @@ class OrderTest extends TestCase
         $this->withoutExceptionHandling();
         $this->login();
         $maker = new OrderMaker();
-        $newItemId = fn (int $amount = 1) => $maker->createItem(
+        $newItemId = fn(int $amount = 1) => $maker->createItem(
             orderedAmount: $amount,
             productAmount: 10
         )->getId();
@@ -467,7 +467,7 @@ class OrderTest extends TestCase
         $this->withoutExceptionHandling();
         $user = $this->login();
         $maker = new OrderMaker();
-        $addItem = fn () => $maker->createItem(productAmount: 10)->getId();
+        $addItem = fn() => $maker->createItem(productAmount: 10)->getId();
         $p1 = $addItem();
         $p2 = $addItem();
         $p3 = $addItem();
@@ -510,7 +510,7 @@ class OrderTest extends TestCase
     private function assertOrderItemHas(array $orderItems): void
     {
         array_map(
-            fn ($data) => $this->assertDatabaseHas(OrderItem::TABLE, [
+            fn($data) => $this->assertDatabaseHas(OrderItem::TABLE, [
                 OrderItem::ID => $data[0],
                 OrderItem::ORDER => $data[1],
                 OrderItem::PRODUCT => $data[2],

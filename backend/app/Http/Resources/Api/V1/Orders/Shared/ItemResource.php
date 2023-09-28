@@ -20,7 +20,9 @@ class ItemResource extends JsonResource implements CustomizationContract
     public const UNIT_PRICE = 'unit_price';
     public const PRICE = 'price';
 
-    /** @var OrderItem */
+    /**
+     * @var OrderItem
+     */
     public $resource;
     private TotalPriceInterface $totalPrice;
     private OrderItemRepository $orderItemRepository;
@@ -46,7 +48,7 @@ class ItemResource extends JsonResource implements CustomizationContract
             self::AMOUNT => $this->resource->getAmount(),
             self::CUSTOMIZATIONS => $this->orderItemRepository
                 ->getOptionsWithCustomization($this->resource)
-                ->map(fn (Option $c) => new CustomizationResource($c)),
+                ->map(fn(Option $c) => new CustomizationResource($c)),
             self::UNIT_PRICE => $this->resource
                 ->getPriceObject()->represent(),
             self::PRICE => $this->totalPrice->addPrices(

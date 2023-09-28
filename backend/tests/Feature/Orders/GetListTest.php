@@ -8,8 +8,8 @@ use App\Http\Requests\Api\V1\Orders\GetListRequest;
 use App\Http\Resources\Api\V1\Orders\List;
 use App\Http\Resources\Api\V1\Orders\Shared;
 use App\Http\Resources\Api\V1\Shared\{
-    DeliveryTypeResource,
-    CustomizationResource
+    CustomizationResource,
+    DeliveryTypeResource
 };
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -266,7 +266,7 @@ class GetListTest extends TestCase
     private function setItemsOfOrders(): array
     {
         $orders = createOrder(count: 1);
-        $orderItems = $orders->map(fn ($order) => createOrderItem(fields: [
+        $orderItems = $orders->map(fn($order) => createOrderItem(fields: [
             OrderItem::ORDER => $order,
         ], count: 2));
         $this->userRepository->saveOrders($this->login(), $orders);

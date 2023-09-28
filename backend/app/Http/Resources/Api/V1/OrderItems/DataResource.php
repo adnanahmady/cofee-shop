@@ -10,7 +10,9 @@ class DataResource extends JsonResource
 {
     public const AMOUNT = 'amount';
 
-    /** @var OrderItem */
+    /**
+     * @var OrderItem
+     */
     public $resource;
 
     /**
