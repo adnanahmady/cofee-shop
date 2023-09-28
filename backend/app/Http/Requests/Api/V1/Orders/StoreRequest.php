@@ -4,9 +4,11 @@ namespace App\Http\Requests\Api\V1\Orders;
 
 use App\Http\Requests\Api\V1\AbstractFormRequest;
 use App\Interfaces\IdInterface;
+use App\Models\Address;
 use App\Models\DeliveryType;
 use App\Models\Option;
 use App\Models\Product;
+use App\Repositories\AddressRepository;
 use App\Repositories\DeliveryTypeRepository;
 use App\Support\RequestMappers\Orders\ProductIteratorInterface;
 use App\Support\RequestMappers\Orders\ProductsIterator;
@@ -19,6 +21,7 @@ class StoreRequest extends AbstractFormRequest
     public const DELIVERY_TYPE = 'delivery_type_id';
     public const CUSTOMIZATIONS = 'customizations';
     public const OPTION_ID = 'option_id';
+    public const ADDRESS = 'address_id';
 
     public function rules(): array
     {
@@ -43,6 +46,11 @@ class StoreRequest extends AbstractFormRequest
                 Option::TABLE,
                 Option::ID
             ),
+            self::ADDRESS => sprintf(
+                'required|int|exists:%s,%s',
+                Address::TABLE,
+                Address::ID
+            ),
         ];
     }
 
@@ -65,6 +73,14 @@ class StoreRequest extends AbstractFormRequest
     {
         $repository = new DeliveryTypeRepository();
         $id = $this->get(self::DELIVERY_TYPE);
+
+        return $repository->findById($id);
+    }
+
+    public function getAddress(): IdInterface
+    {
+        $repository = new AddressRepository();
+        $id = $this->get(self::ADDRESS);
 
         return $repository->findById($id);
     }

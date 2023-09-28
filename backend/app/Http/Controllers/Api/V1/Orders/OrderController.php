@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Orders;
 
+use App\DataTransferObjects\Orders\StoreOrderDataDto;
 use App\Exceptions\Models\InvalidOrderItemAmountException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\GetListRequest;
@@ -40,9 +41,12 @@ class OrderController extends Controller
         OrderRepository $orderRepository
     ): Stored\PaginatorResource {
         $order = $orderRepository->orderProducts(
-            $request->user(),
+            new StoreOrderDataDto(
+                user: $request->user(),
+                deliveryType: $request->getDeliveryType(),
+                address: $request->getAddress(),
+            ),
             $request->getProducts(),
-            $request->getDeliveryType(),
         );
 
         return new Stored\PaginatorResource($order);

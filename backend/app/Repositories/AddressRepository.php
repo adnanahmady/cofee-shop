@@ -11,6 +11,11 @@ use App\Models\User;
 
 class AddressRepository
 {
+    public function findById(int $id): null|Address
+    {
+        return Address::find(id: $id);
+    }
+
     public function getUser(Address $address): User
     {
         return $address->user;

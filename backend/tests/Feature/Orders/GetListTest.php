@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\User;
+use App\Repositories\OrderRepository;
 use App\Repositories\UserRepository;
 use App\Support\Calculators\TotalPrice;
 use App\Support\Values\Pagination\PerPageValue;
@@ -34,6 +35,48 @@ class GetListTest extends TestCase
     use LetsBeTrait;
 
     private UserRepository $userRepository;
+
+    public function test_address_should_contain_expected_data(): void
+    {
+        $this->withoutExceptionHandling();
+        $user = $this->login();
+        $order = createOrder(fields: [Order::USER => $user]);
+
+        $address = $this->request()->json(join('.', [
+            List\PaginatorCollection::DATA,
+            0,
+            List\OrderResource::ADDRESS,
+        ]));
+
+        $orderAddress = (new OrderRepository())->getAddress($order);
+        $resource = List\AddressResource::class;
+        $this->assertSame([
+            $resource::CITY => $orderAddress->getCity(),
+            $resource::STREET => $orderAddress->getStreet(),
+            $resource::PLATE_NUMBER => $orderAddress->getPlateNumber(),
+            $resource::POSTAL_CODE => $orderAddress->getPostalCode(),
+            $resource::DESCRIPTION => $orderAddress->getDescription(),
+        ], $address);
+    }
+
+    // phpcs:ignore
+    public function test_each_order_should_have_the_customer_delivery_address(): void
+    {
+        $this->withoutExceptionHandling();
+        $user = $this->login();
+        createOrder(fields: [
+            Order::USER => $user,
+        ], count: 5);
+
+        $data = $this->request()->json(join('.', [
+            List\PaginatorCollection::DATA,
+        ]));
+
+        array_map(fn(array $order): null => $this->assertArrayHasKey(
+            List\OrderResource::ADDRESS,
+            $order
+        ), $data);
+    }
 
     // phpcs:ignore
     public function test_the_order_item_should_show_the_user_selected_option(): void

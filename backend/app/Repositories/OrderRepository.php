@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\DataTransferObjects\Orders\StoreOrderDataDto;
 use App\Exceptions\Models\InvalidOrderItemAmountException;
 use App\Interfaces\IdInterface;
+use App\Models\Address;
 use App\Models\DeliveryType;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -27,6 +29,11 @@ class OrderRepository
         $this->productRepository = new ProductRepository();
         $this->statusRepository = new OrderStatusRepository();
         $this->orderItemRepository = new OrderItemRepository();
+    }
+
+    public function getAddress(Order $order): Address
+    {
+        return $order->address;
     }
 
     public function doesBelongToUser(Order $order, IdInterface $user): bool
@@ -88,13 +95,12 @@ class OrderRepository
      * @throws InvalidOrderItemAmountException
      */
     public function orderProducts(
-        User $user,
+        StoreOrderDataDto $data,
         ProductIteratorInterface $products,
-        IdInterface $deliveryType,
     ): Order {
         try {
             DB::beginTransaction();
-            $order = $this->createOrder($user, $deliveryType);
+            $order = $this->createOrder($data);
 
             foreach ($products as $product) {
                 $orderItem = $this->addProduct($order, $product);
@@ -116,18 +122,17 @@ class OrderRepository
         }
     }
 
-    public function createOrder(
-        User $user,
-        IdInterface $deliveryType
-    ): Order {
+    public function createOrder(StoreOrderDataDto $dto): Order
+    {
         $order = new Order();
-        $order->setUser($user);
+        $order->setUser($dto->getUser());
         $order->setStatus(
             $this->statusRepository->firstOrCreate(
                 new WaitingValue()
             )
         );
-        $order->setDeliveryType($deliveryType);
+        $order->setDeliveryType($dto->getDeliveryType());
+        $order->setAddress($dto->getAddress());
         $order->save();
 
         return $order;

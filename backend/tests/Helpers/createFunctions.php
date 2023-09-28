@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Ability;
+use App\Models\Address;
 use App\Models\Currency;
 use App\Models\Customization;
 use App\Models\DeliveryType;
@@ -12,6 +13,21 @@ use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+
+if (!function_exists('createAddress')) {
+    function createAddress(
+        array $fields = [],
+        int $count = null,
+    ): Address|Collection {
+        $factory = Address::factory();
+
+        if ($count) {
+            $factory = $factory->count($count);
+        }
+
+        return $factory->create($fields);
+    }
+}
 
 if (!function_exists('createOption')) {
     function createOption(

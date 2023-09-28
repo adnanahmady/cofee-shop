@@ -8,6 +8,7 @@ use App\Http\Resources\Api\V1\Orders\Shared;
 use App\Http\Resources\Api\V1\Orders\Stored;
 use App\Http\Resources\Api\V1\Shared\CustomizationResource;
 use App\Http\Resources\Api\V1\Shared\DeliveryTypeResource;
+use App\Models\Address;
 use App\Models\Currency;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -109,7 +110,13 @@ class OrderTest extends TestCase
     private function arrangeRequirements(Currency $currency = null): array
     {
         $this->withoutExceptionHandling();
-        $this->login();
+        $user = $this->login();
+        $maker = new OrderMaker();
+        $maker->setAddress(
+            createAddress(fields: [
+                Address::USER => $user,
+            ])
+        );
         $customizedProduct = addCustomizationToProduct(
             product: createProduct([
                 Product::CURRENCY => $currency ??= createCurrency(),
@@ -120,20 +127,12 @@ class OrderTest extends TestCase
         );
         $deliveryType = createDeliveryType();
         $selectedOption = $customizedProduct->getOption(2);
-        $data = [
-            StoreRequest::PRODUCTS => [
-                [
-                    StoreRequest::PRODUCT_ID => $customizedProduct
-                        ->getProduct()
-                        ->getId(),
-                    StoreRequest::CUSTOMIZATIONS => [[
-                        StoreRequest::OPTION_ID => $selectedOption->getId(),
-                    ]],
-                    StoreRequest::AMOUNT => 1,
-                ],
-            ],
-            StoreRequest::DELIVERY_TYPE => $deliveryType->getId(),
-        ];
+        $maker->createItem(
+            product: $customizedProduct->getProduct(),
+            selectedOptions: [$selectedOption]
+        );
+        $maker->setDeliveryType($deliveryType);
+        $data = $maker->make();
 
         return [$customizedProduct, $selectedOption, $data];
     }
@@ -141,12 +140,15 @@ class OrderTest extends TestCase
     public function test_the_order_type_needs_to_get_set(): void
     {
         $this->withoutExceptionHandling();
-        $this->login();
+        $user = $this->login();
         $maker = new OrderMaker();
+        $maker->setAddress(createAddress(fields: [
+            Address::USER => $user,
+        ]));
         $maker->createItem();
         $maker->createItem(orderedAmount: 3);
         $deliveryType = createDeliveryType();
-        $maker->setDeliveryType($deliveryType->getId());
+        $maker->setDeliveryType($deliveryType);
         $data = $maker->make();
 
         $order = $this->request($data)->json(join('.', [
@@ -220,8 +222,11 @@ class OrderTest extends TestCase
 
     private function getData(): array
     {
-        $this->login();
+        $user = $this->login();
         $maker = new OrderMaker();
+        $maker->setAddress(createAddress(fields: [
+            Address::USER => $user,
+        ]));
         $maker->createItem();
         $maker->createItem(orderedAmount: 3);
         $maker->createItem(orderedAmount: 2);
@@ -232,6 +237,41 @@ class OrderTest extends TestCase
     public static function dataProviderForValidationTest(): array
     {
         return [
+            'the user selected receive address should be integer' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                StoreRequest::ADDRESS => 'none integer',
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
+            'the user selected receive address should exists in system' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                StoreRequest::ADDRESS => 1,
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
+            'the user selected receive address is required' => [[
+                StoreRequest::PRODUCTS => [
+                    [
+                        StoreRequest::PRODUCT_ID => 1,
+                        StoreRequest::AMOUNT => 1,
+                    ],
+                ],
+                StoreRequest::DELIVERY_TYPE => 1,
+                'makeProduct' => true,
+                'makeDeliveryType' => true,
+            ]],
             'the specified customization should exist in system' => [[
                 StoreRequest::PRODUCTS => [
                     [
@@ -245,6 +285,7 @@ class OrderTest extends TestCase
                 StoreRequest::DELIVERY_TYPE => 1,
                 'makeProduct' => true,
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'the specified customization should be integer' => [[
                 StoreRequest::PRODUCTS => [
@@ -259,6 +300,7 @@ class OrderTest extends TestCase
                 StoreRequest::DELIVERY_TYPE => 1,
                 'makeProduct' => true,
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'each customization item should contain required item' => [[
                 StoreRequest::PRODUCTS => [
@@ -271,6 +313,7 @@ class OrderTest extends TestCase
                 StoreRequest::DELIVERY_TYPE => 1,
                 'makeProduct' => true,
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'customization list should contain at least one item' => [[
                 StoreRequest::PRODUCTS => [
@@ -283,6 +326,7 @@ class OrderTest extends TestCase
                 StoreRequest::DELIVERY_TYPE => 1,
                 'makeProduct' => true,
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'all customizations need to be in their related field' => [[
                 StoreRequest::PRODUCTS => [
@@ -295,6 +339,7 @@ class OrderTest extends TestCase
                 StoreRequest::DELIVERY_TYPE => 1,
                 'makeProduct' => true,
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'delivery type needs to exist in system' => [[
                 StoreRequest::PRODUCTS => [
@@ -305,6 +350,7 @@ class OrderTest extends TestCase
                 ],
                 StoreRequest::DELIVERY_TYPE => 1,
                 'makeProduct' => true,
+                'makeAddress' => true,
             ]],
             'delivery type needs to be integer' => [[
                 StoreRequest::PRODUCTS => [
@@ -315,6 +361,7 @@ class OrderTest extends TestCase
                 ],
                 StoreRequest::DELIVERY_TYPE => 'a',
                 'makeProduct' => true,
+                'makeAddress' => true,
             ]],
             'delivery type is required' => [[
                 StoreRequest::PRODUCTS => [
@@ -324,6 +371,7 @@ class OrderTest extends TestCase
                     ],
                 ],
                 'makeProduct' => true,
+                'makeAddress' => true,
             ]],
             'requested item amount should be less than the product amount' => [[
                 StoreRequest::PRODUCTS => [
@@ -334,6 +382,7 @@ class OrderTest extends TestCase
                 ],
                 'makeProduct' => true,
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'amount should be integer' => [[
                 StoreRequest::PRODUCTS => [
@@ -344,25 +393,30 @@ class OrderTest extends TestCase
                 ],
                 'makeProduct' => true,
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'product should exist in system' => [[
                 StoreRequest::PRODUCTS => [
                     [StoreRequest::PRODUCT_ID => 1, StoreRequest::AMOUNT => 10],
                 ],
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'product is required' => [[
                 StoreRequest::PRODUCTS => [
                     [StoreRequest::AMOUNT => 10],
                 ],
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'products should contain at least one item' => [[
                 StoreRequest::PRODUCTS => [],
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
             'products is required' => [[
                 'makeDeliveryType' => true,
+                'makeAddress' => true,
             ]],
         ];
     }
@@ -370,6 +424,7 @@ class OrderTest extends TestCase
     #[DataProvider('dataProviderForValidationTest')]
     public function test_data_validation(array $data): void
     {
+        // Arrange|Given
         $this->login();
         $newPId = fn() => createProduct([Product::AMOUNT => 5])->getId();
 
@@ -388,8 +443,14 @@ class OrderTest extends TestCase
             $data[StoreRequest::DELIVERY_TYPE] = createDeliveryType()->getId();
         }
 
+        if (key_exists('makeAddress', $data)) {
+            $data[StoreRequest::ADDRESS] = createAddress()->getId();
+        }
+
+        // Act|When
         $response = $this->request($data);
 
+        // Assert|Then
         $response->assertUnprocessable();
         $this->assertCount(1, $response->json('errors'));
     }
@@ -397,8 +458,11 @@ class OrderTest extends TestCase
     // phpcs:ignore
     public function test_when_ordered_items_are_more_than_product_amount_user_can_not_purchase(): void
     {
-        $this->login();
+        $user = $this->login();
         $maker = new OrderMaker();
+        $maker->setAddress(createAddress(fields: [
+            Address::USER => $user,
+        ]));
         $p1 = $maker->createItem(orderedAmount: 6, productAmount: 5)->getId();
         $data = $maker->make();
 
@@ -417,20 +481,26 @@ class OrderTest extends TestCase
     public function test_after_ordering_product_the_amount_of_product_should_be_reserved(): void
     {
         $this->withoutExceptionHandling();
-        $this->login();
+        $user = $this->login();
         $maker = new OrderMaker();
         $p1 = $maker->createItem(
             orderedAmount: $amount = 3,
             productAmount: 10
         )->getId();
+        $maker->setAddress(createAddress(fields: [
+            Address::USER => $user,
+        ]));
         $data = $maker->make();
 
         $data = $this->request($data)->json(Stored\PaginatorResource::DATA);
 
         $orderId = $data[Shared\DataResource::ORDER_ID];
-        $this->assertOrderItemHas([
-            [$this->getItemId($data, 0), $orderId, $p1, $amount],
-        ]);
+        $this->assertOrderItemHas(
+            id: $this->getItemId($data, itemIndex: 0),
+            orderId: $orderId,
+            productId: $p1,
+            amount: $amount
+        );
         $this->assertDatabaseHas(Product::TABLE, [
             Product::ID => $p1,
             Product::AMOUNT => 7,
@@ -441,8 +511,11 @@ class OrderTest extends TestCase
     public function test_user_should_be_able_to_order_multiple_items_of_the_same_product(): void
     {
         $this->withoutExceptionHandling();
-        $this->login();
+        $user = $this->login();
         $maker = new OrderMaker();
+        $maker->setAddress(createAddress(fields: [
+            Address::USER => $user,
+        ]));
         $newItemId = fn(int $amount = 1) => $maker->createItem(
             orderedAmount: $amount,
             productAmount: 10
@@ -455,11 +528,24 @@ class OrderTest extends TestCase
         $data = $this->request($data)->json(Stored\PaginatorResource::DATA);
 
         $orderId = $data[Shared\DataResource::ORDER_ID];
-        $this->assertOrderItemHas([
-            [$this->getItemId($data, 0), $orderId, $p1, $amount],
-            [$this->getItemId($data, 1), $orderId, $p2, 1],
-            [$this->getItemId($data, 2), $orderId, $p3, 1],
-        ]);
+        $this->assertOrderItemHas(
+            id: $this->getItemId($data, itemIndex: 0),
+            orderId: $orderId,
+            productId: $p1,
+            amount: $amount
+        );
+        $this->assertOrderItemHas(
+            id: $this->getItemId($data, itemIndex: 1),
+            orderId: $orderId,
+            productId: $p2,
+            amount: 1
+        );
+        $this->assertOrderItemHas(
+            id: $this->getItemId($data, itemIndex: 2),
+            orderId: $orderId,
+            productId: $p3,
+            amount: 1
+        );
     }
 
     public function test_it_should_store_the_user_order(): void
@@ -467,30 +553,61 @@ class OrderTest extends TestCase
         $this->withoutExceptionHandling();
         $user = $this->login();
         $maker = new OrderMaker();
-        $addItem = fn() => $maker->createItem(productAmount: 10)->getId();
-        $p1 = $addItem();
-        $p2 = $addItem();
-        $p3 = $addItem();
-        $data = $maker->make();
+        $maker->setAddress(createAddress(fields: [
+            Address::USER => $user,
+        ]));
+        $p1 = $maker->createItem(productAmount: 10)->getId();
+        $p2 = $maker->createItem(productAmount: 10)->getId();
+        $p3 = $maker->createItem(productAmount: 10)->getId();
+        $body = $maker->make();
 
-        $data = $this->request($data)->json(Stored\PaginatorResource::DATA);
+        $data = $this->request($body)->json(Stored\PaginatorResource::DATA);
 
         $orderId = $data[Shared\DataResource::ORDER_ID];
         $this->assertDatabaseHas(Order::TABLE, [
             Order::ID => $orderId,
             Order::USER => $user->getId(),
+            Order::DELIVERY_TYPE => $body[StoreRequest::DELIVERY_TYPE],
+            Order::ADDRESS => $body[StoreRequest::ADDRESS],
         ]);
-        $this->assertOrderItemHas([
-            [$this->getItemId($data, 0), $orderId, $p1],
-            [$this->getItemId($data, 1), $orderId, $p2],
-            [$this->getItemId($data, 2), $orderId, $p3],
+        $this->assertOrderItemHas(
+            id: $this->getItemId($data, itemIndex: 0),
+            orderId: $orderId,
+            productId: $p1
+        );
+        $this->assertOrderItemHas(
+            id: $this->getItemId($data, itemIndex: 1),
+            orderId: $orderId,
+            productId: $p2
+        );
+        $this->assertOrderItemHas(
+            id: $this->getItemId($data, itemIndex: 2),
+            orderId: $orderId,
+            productId: $p3
+        );
+    }
+
+    private function assertOrderItemHas(
+        int $id,
+        int $orderId,
+        int $productId,
+        int $amount = 1
+    ): void {
+        $this->assertDatabaseHas(OrderItem::TABLE, [
+            OrderItem::ID => $id,
+            OrderItem::ORDER => $orderId,
+            OrderItem::PRODUCT => $productId,
+            OrderItem::AMOUNT => $amount,
         ]);
     }
 
     public function test_it_should_response_correctly(): void
     {
-        $this->login();
+        $user = $this->login();
         $maker = new OrderMaker();
+        $maker->setAddress(createAddress(fields: [
+            Address::USER => $user,
+        ]));
         $maker->createItem();
         $data = $maker->make();
 
@@ -499,25 +616,12 @@ class OrderTest extends TestCase
         $response->assertCreated();
     }
 
-    private function getItemId(array $data, int $index): int
+    private function getItemId(array $data, int $itemIndex): int
     {
         $itemsKey = Shared\DataResource::ITEMS;
         $itemIdKey = Shared\ItemResource::ITEM_ID;
 
-        return $data[$itemsKey][$index][$itemIdKey];
-    }
-
-    private function assertOrderItemHas(array $orderItems): void
-    {
-        array_map(
-            fn($data) => $this->assertDatabaseHas(OrderItem::TABLE, [
-                OrderItem::ID => $data[0],
-                OrderItem::ORDER => $data[1],
-                OrderItem::PRODUCT => $data[2],
-                OrderItem::AMOUNT => $data[3] ?? 1,
-            ]),
-            $orderItems
-        );
+        return $data[$itemsKey][$itemIndex][$itemIdKey];
     }
 
     private function request(array $data): TestResponse

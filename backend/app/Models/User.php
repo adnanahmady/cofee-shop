@@ -132,4 +132,9 @@ class User extends Authenticatable implements IdContract
     {
         return $this->hasMany(Order::class);
     }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
 }
