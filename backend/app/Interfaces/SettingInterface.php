@@ -17,5 +17,19 @@ interface SettingInterface
      * is, it needs to be presented as
      * string.
      */
-    public function value(): string;
+    public function value(): null|string;
+
+    /**
+     * Each setting needs to have a
+     * default value.
+     */
+    public function default(): null|string;
+
+    /**
+     * Each setting needs to be able
+     * to represent itself as a string,
+     * the recommendation is to present
+     * its name when changing to string.
+     */
+    public function __toString(): string;
 }

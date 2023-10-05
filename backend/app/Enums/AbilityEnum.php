@@ -9,6 +9,9 @@ enum AbilityEnum: string
     case SetOrderType = 'Set order type';
     case AddAddressForOthers = 'Add address for other users';
 
+    // Admin permissions
+    case GetAllSettings = 'Get all settings';
+
     public function slugify(): string
     {
         return str($this->value)->snake();

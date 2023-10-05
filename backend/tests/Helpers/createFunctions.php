@@ -11,8 +11,24 @@ use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\Role;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+
+if (!function_exists('createSetting')) {
+    function createSetting(
+        array $fields = [],
+        int $count = null,
+    ): Setting|Collection {
+        $factory = Setting::factory();
+
+        if ($count) {
+            $factory = $factory->count($count);
+        }
+
+        return $factory->create($fields);
+    }
+}
 
 if (!function_exists('createAddress')) {
     function createAddress(
