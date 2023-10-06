@@ -3,12 +3,41 @@
 namespace Tests\Unit\Price;
 
 use App\Models\Currency;
+use App\Settings\Delegators\MainCurrency;
+use App\Settings\SettingManager;
 use App\ValueObjects\Shared\PriceObject;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 class PriceObjectTest extends TestCase
 {
+    use RefreshDatabase;
+
+    // phpcs:ignore
+    public function test_it_should_show_prices_in_the_admin_specified_currency(): void
+    {
+        /** @var SettingManager $manager */
+        $mainCurrency = createCurrency([
+            Currency::CODE => 'IRR',
+            Currency::DECIMAL_PLACES => 0,
+        ]);
+        $manager = resolve(SettingManager::class);
+        $manager->set(new MainCurrency(value: 'IRR'));
+
+        $object = new PriceObject(
+            price: 37.4354,
+            currency: createCurrency([
+                Currency::DECIMAL_PLACES => 3,
+            ])
+        );
+
+        $this->assertMatchesRegularExpression(
+            '/' . $mainCurrency->getCode() . ' \d+/',
+            $object->represent()
+        );
+    }
+
     #[TestWith([37.435478634152, 2, 37.43])]
     #[TestWith([3743547, 2, 37435.47])]
     public function test_it_should_present_itself_as_expected(

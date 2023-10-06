@@ -3,6 +3,9 @@
 namespace App\ValueObjects\Shared;
 
 use App\Models\Currency;
+use App\Repositories\CurrencyRepository;
+use App\Settings\Delegators\MainCurrency;
+use App\Settings\SettingManager;
 use App\Support\Converters\PriceDeNormalizer;
 use App\Support\Converters\PriceNormalizer;
 use App\Support\Exchangers\PriceExchanger;
@@ -32,11 +35,33 @@ class PriceObject implements PriceInterface
 
     public function represent(): string
     {
+        $manager = $this->getManager();
+        $mainCurrency = $manager->get(new MainCurrency());
+        $doesRequireExchangeToMainCurrency = (
+            null !== $mainCurrency->value()
+            && $mainCurrency->value() !== $this->currency->getCode()
+        );
+
+        if ($doesRequireExchangeToMainCurrency) {
+            $r = new CurrencyRepository();
+            $obj = $this->exchange(
+                $this,
+                $r->findByCode($mainCurrency->value())
+            );
+
+            return $obj->represent();
+        }
+
         return sprintf(
             '%s %s',
             $this->currency->getCode(),
             $this->getFormedPrice()
         );
+    }
+
+    private function getManager(): SettingManager
+    {
+        return resolve(SettingManager::class);
     }
 
     /**
@@ -97,7 +122,7 @@ class PriceObject implements PriceInterface
 
     public function sum(PriceInterface $price): PriceInterface
     {
-        $exchangedPrice = $this->exchange($price);
+        $exchangedPrice = $this->exchange($price, $this->currency);
 
         return new static(
             $this->getPrice() + $exchangedPrice->getPrice(),
@@ -105,11 +130,13 @@ class PriceObject implements PriceInterface
         );
     }
 
-    private function exchange(PriceInterface $price): PriceInterface
-    {
+    private function exchange(
+        PriceInterface $price,
+        Currency $currency
+    ): PriceInterface {
         $exchanger = new PriceExchanger($price);
 
-        return $exchanger->exchange(to: $this->currency);
+        return $exchanger->exchange(to: $currency);
     }
 
     public function __toString(): string

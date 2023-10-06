@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Order;
 use App\Observers\OrderObserver;
+use App\Settings\Delegators\MainCurrency;
 use App\Settings\SettingContainer;
 use App\Settings\SettingContainerInterface;
 use App\Settings\SettingManager;
@@ -29,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
             fn() => $registers
         );
         $this->app->singleton(SettingManager::class, SettingManager::class);
+        $registers->register(new MainCurrency());
     }
 }

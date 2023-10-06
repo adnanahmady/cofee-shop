@@ -26,24 +26,21 @@ class GetAllTest extends TestCase
     public function test_unset_setting_is_showing_its_value_as_null_with_default(): void
     {
         $this->loginAsAdmin();
-        $firstSetting = $this->getDummySetting();
-        $secondSetting = $this->getDummySetting(name: 'second.setting.test');
+        $firstSetting = $this->getDummySetting(name: 'dummy.setting');
+        $secondSetting = $this->getDummySetting(name: 'dummy.setting.2');
         createSetting([Setting::KEY => $firstSetting->name()]);
         $manager = resolve(SettingManager::class);
         $manager->register($firstSetting);
         $manager->register($secondSetting);
         $setting = $manager->get($secondSetting);
 
-        $item = $this->request()->json(join('.', [
-            List\PaginatorResource::DATA,
-            1,
-        ]));
+        $data = $this->request()->json(List\PaginatorResource::DATA);
 
         $this->assertSame([
             List\ItemResource::NAME => $setting->name(),
             List\ItemResource::VALUE => null,
             List\ItemResource::DEFAULT => $setting->default(),
-        ], $item);
+        ], $data[count($data) - 1]);
     }
 
     // phpcs:ignore
@@ -56,16 +53,13 @@ class GetAllTest extends TestCase
         $manager->register($dummySetting);
         $setting = $manager->get($dummySetting);
 
-        $item = $this->request()->json(join('.', [
-            List\PaginatorResource::DATA,
-            0,
-        ]));
+        $data = $this->request()->json(List\PaginatorResource::DATA);
 
         $this->assertSame([
             List\ItemResource::NAME => $setting->name(),
             List\ItemResource::VALUE => $setting->value(),
             List\ItemResource::DEFAULT => $setting->default(),
-        ], $item);
+        ], $data[count($data) - 1]);
     }
 
     // phpcs:ignore
@@ -83,7 +77,7 @@ class GetAllTest extends TestCase
     }
 
     private function getDummySetting(
-        string $name = 'some.setting.for.test'
+        string $name = 'dummy.setting'
     ): SettingInterface {
         return new class ($name) implements SettingInterface {
             public function __construct(private readonly string $name) {}
