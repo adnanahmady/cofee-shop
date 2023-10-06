@@ -21,4 +21,5 @@ Route::middleware('auth:api')->group(function (): void {
         base_path('routes/api/v1/delivery-types.php')
     );
     Route::name('settings.')->group(base_path('routes/api/v1/settings.php'));
+    Route::name('currencies.')->group(base_path('routes/api/v1/currencies.php'));
 });

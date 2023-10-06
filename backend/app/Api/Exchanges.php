@@ -2,6 +2,8 @@
 
 namespace App\Api;
 
+use App\DataTransferObjects\Api\RateDto;
+
 class Exchanges implements ApiGetInterface
 {
     private null|array $response = null;
@@ -48,6 +50,25 @@ class Exchanges implements ApiGetInterface
     public function getBase(): string
     {
         return $this->get()['base'];
+    }
+
+    /**
+     * @return array<RateDto>|RateDto
+     */
+    public function getIndexedRates(int $index = null): array|RateDto
+    {
+        $indexedRates = array_map(
+            fn(mixed $rate, string $code): RateDto => new RateDto(
+                code: $code,
+                rate: $rate
+            ),
+            $rates = $this->get()['rates'],
+            array_keys($rates),
+        );
+
+        return (null !== $index && $index > -1) ?
+            $indexedRates[$index] :
+            $indexedRates;
     }
 
     private function getResponse(): array
