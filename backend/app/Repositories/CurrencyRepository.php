@@ -10,4 +10,9 @@ class CurrencyRepository
     {
         return Currency::where(Currency::CODE, $code)->first();
     }
+
+    public static function deleteAll(): void
+    {
+        Currency::all()->each->delete();
+    }
 }

@@ -3,11 +3,9 @@
 namespace App\ValueObjects\Shared;
 
 use App\Models\Currency;
-use App\Repositories\CurrencyRepository;
-use App\Settings\Delegators\MainCurrency;
-use App\Settings\SettingManager;
 use App\Support\Converters\PriceDeNormalizer;
 use App\Support\Converters\PriceNormalizer;
+use App\Support\DecisionMakers\CurrencyDecisionMaker;
 use App\Support\Exchangers\PriceExchanger;
 
 class PriceObject implements PriceInterface
@@ -35,33 +33,14 @@ class PriceObject implements PriceInterface
 
     public function represent(): string
     {
-        $manager = $this->getManager();
-        $mainCurrency = $manager->get(new MainCurrency());
-        $doesRequireExchangeToMainCurrency = (
-            null !== $mainCurrency->value()
-            && $mainCurrency->value() !== $this->currency->getCode()
-        );
-
-        if ($doesRequireExchangeToMainCurrency) {
-            $r = new CurrencyRepository();
-            $obj = $this->exchange(
-                $this,
-                $r->findByCode($mainCurrency->value())
-            );
-
-            return $obj->represent();
-        }
+        $decisionMaker = new CurrencyDecisionMaker($this->currency);
+        $obj = $this->exchange($this, $decisionMaker->decide());
 
         return sprintf(
             '%s %s',
-            $this->currency->getCode(),
-            $this->getFormedPrice()
+            $obj->currency->getCode(),
+            $obj->getFormedPrice()
         );
-    }
-
-    private function getManager(): SettingManager
-    {
-        return resolve(SettingManager::class);
     }
 
     /**

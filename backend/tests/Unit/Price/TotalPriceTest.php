@@ -3,6 +3,7 @@
 namespace Tests\Unit\Price;
 
 use App\Models\Currency;
+use App\Repositories\CurrencyRepository;
 use App\Support\Calculators\TotalPrice;
 use App\Support\Exchangers\PriceExchanger;
 use App\ValueObjects\Shared\PriceInterface;
@@ -43,6 +44,7 @@ class TotalPriceTest extends TestCase
 
     public function test_it_can_represent_the_total_amount(): void
     {
+        CurrencyRepository::deleteAll();
         $eur = $this->getEurCurrency();
         $irr = $this->getIrrCurrency();
         $price1 = new PriceObject(30, $eur);

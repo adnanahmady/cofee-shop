@@ -3,6 +3,7 @@
 namespace Tests\Unit\Price;
 
 use App\Models\Currency;
+use App\Repositories\CurrencyRepository;
 use App\Settings\Delegators\MainCurrency;
 use App\Settings\SettingManager;
 use App\ValueObjects\Shared\PriceObject;
@@ -15,15 +16,38 @@ class PriceObjectTest extends TestCase
     use RefreshDatabase;
 
     // phpcs:ignore
+    public function test_when_main_currency_is_not_set_the_default_should_be_used(): void
+    {
+        /** @var SettingManager $manager */
+        $mainCurrency = new MainCurrency();
+        createCurrency([
+            Currency::CODE => $mainCurrency->default(),
+            Currency::DECIMAL_PLACES => 0,
+        ]);
+
+        $object = new PriceObject(
+            price: 37.4354,
+            currency: createCurrency([
+                Currency::DECIMAL_PLACES => 3,
+            ])
+        );
+
+        $this->assertMatchesRegularExpression(
+            '/' . $mainCurrency->default() . ' \d+/',
+            $object->represent()
+        );
+    }
+
+    // phpcs:ignore
     public function test_it_should_show_prices_in_the_admin_specified_currency(): void
     {
         /** @var SettingManager $manager */
+        $manager = resolve(SettingManager::class);
         $mainCurrency = createCurrency([
-            Currency::CODE => 'IRR',
+            Currency::CODE => $code = 'IRR',
             Currency::DECIMAL_PLACES => 0,
         ]);
-        $manager = resolve(SettingManager::class);
-        $manager->set(new MainCurrency(value: 'IRR'));
+        $manager->set(new MainCurrency(value: $code));
 
         $object = new PriceObject(
             price: 37.4354,
@@ -45,6 +69,7 @@ class PriceObjectTest extends TestCase
         mixed $decimalPlaces,
         mixed $expected
     ): void {
+        CurrencyRepository::deleteAll();
         $object = new PriceObject(
             price: $price,
             currency: $c = createCurrency([
