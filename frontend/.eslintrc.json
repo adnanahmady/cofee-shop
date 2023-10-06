@@ -1,0 +1,35 @@
+{
+  "root": true,
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "parser": "babel-eslint",
+    "ecmaVersion": 2015,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "semi": ["error", "always"],
+    "react/react-in-jsx-scope": 0, // Importing React in jsx files is not necessary.
+    "no-undef": 0, // Using global functions like "test" function in test files is allowed.
+    "indent": ["error", 2],
+    "block-spacing": 2,
+    "no-multi-spaces": ["error"],
+    "no-trailing-spaces": ["error", {
+      "skipBlankLines": true,
+      "ignoreComments": false
+    }],
+    "template-tag-spacing": "error"
+  }
+}
