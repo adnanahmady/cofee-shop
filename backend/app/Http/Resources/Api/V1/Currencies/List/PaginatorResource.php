@@ -10,7 +10,9 @@ class PaginatorResource extends JsonResource
 {
     public const DATA = 'data';
 
-    /** @var array<RateDto> */
+    /**
+     * @var array<RateDto>
+     */
     public $resource;
 
     /**

@@ -12,16 +12,22 @@ class SettingManager
     private readonly SettingRepository $repository;
 
     public function __construct(
-        private readonly SettingContainerInterface $registers
+        private readonly SettingContainerInterface $container
     ) {
         $this->repository = new SettingRepository();
     }
 
-    public function set(SettingInterface $setting): void
+    public function set(SettingInterface $setting): SettingInterface
     {
-        $this->repository->set(
+        $storedSetting = $this->repository->set(
             key: $setting->name(),
             value: $setting->value()
+        );
+
+        return new GeneralSetting(
+            name: $name = $storedSetting->getKey(),
+            value: $storedSetting->getValue(),
+            default: $this->container->find($name)?->default(),
         );
     }
 
@@ -37,7 +43,7 @@ class SettingManager
         return new GeneralSetting(
             name: $setting->getKey(),
             value: $setting->getValue(),
-            default: $this->registers->find($key)?->default()
+            default: $this->container->find($key)?->default()
         );
     }
 
@@ -45,7 +51,7 @@ class SettingManager
         string $key,
         string $default = null
     ): SettingInterface {
-        $isRegistered = $this->registers->isRegistered(key: $key);
+        $isRegistered = $this->container->isRegistered(key: $key);
         $hasNoDefault = null === $default && !$isRegistered;
 
         MissingSettingException::throwIf(
@@ -58,12 +64,12 @@ class SettingManager
             return new GeneralSetting(name: $key, value: $default);
         }
 
-        return $this->registers->find($key);
+        return $this->container->find($key);
     }
 
     public function register(SettingInterface $setting): void
     {
-        $this->registers->register($setting);
+        $this->container->register($setting);
     }
 
     public function getSettings(): array
@@ -74,7 +80,7 @@ class SettingManager
                 value: $this->repository->get(key: $s->name())?->getValue(),
                 default: $s->default()
             ),
-            $this->registers->all()
+            $this->container->all()
         );
     }
 }

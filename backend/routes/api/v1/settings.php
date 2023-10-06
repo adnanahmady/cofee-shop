@@ -11,3 +11,11 @@ Route::get(
     'ability:%s',
     AbilityEnum::GetAllSettings->slugify()
 ));
+
+Route::patch(
+    uri: 'settings',
+    action: [SettingController::class, 'update']
+)->name('update')->middleware(sprintf(
+    'ability:%s',
+    AbilityEnum::SetSettings->slugify()
+));

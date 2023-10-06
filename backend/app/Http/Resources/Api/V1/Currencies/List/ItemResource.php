@@ -11,7 +11,9 @@ class ItemResource extends JsonResource
     public const CODE = 'code';
     public const RATE = 'rate';
 
-    /** @var RateDto */
+    /**
+     * @var RateDto
+     */
     public $resource;
 
     /**

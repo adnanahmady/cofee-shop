@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Order;
 use App\Observers\OrderObserver;
 use App\Settings\SettingContainer;
+use App\Settings\SettingContainerInterface;
 use App\Settings\SettingManager;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,9 +18,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Order::observe(OrderObserver::class);
+        $this->bootSettingTools();
+    }
+
+    private function bootSettingTools(): void
+    {
+        $registers = new SettingContainer();
         $this->app->singleton(
-            SettingManager::class,
-            fn() => new SettingManager(new SettingContainer())
+            SettingContainerInterface::class,
+            fn() => $registers
         );
+        $this->app->singleton(SettingManager::class, SettingManager::class);
     }
 }

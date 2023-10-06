@@ -11,6 +11,7 @@ enum AbilityEnum: string
 
     // Admin permissions
     case GetAllSettings = 'Get all settings';
+    case SetSettings = 'Set settings';
 
     public function slugify(): string
     {
