@@ -59,6 +59,22 @@ services:
     ports:
       - "8080:8080"
 
+  frontend:
+    build:
+      context: .frontend/config
+      dockerfile: Dockerfile
+    working_dir: /frontend
+    volumes:
+      - ./frontend:/frontend
+      - .frontend/tmp:/tmp
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:3000"
+    environment:
+      HISTFILE: /tmp/.history
+      NODE_ENV: development
+
 volumes:
   coffeeDB:
 
