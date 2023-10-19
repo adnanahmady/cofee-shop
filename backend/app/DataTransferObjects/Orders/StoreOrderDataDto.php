@@ -5,12 +5,13 @@ namespace App\DataTransferObjects\Orders;
 use App\Interfaces\IdInterface;
 use App\Models\User;
 
-final class StoreOrderDataDto
+// phpcs:disable PSR1.Files.SideEffects
+final readonly class StoreOrderDataDto
 {
     public function __construct(
-        private readonly User $user,
-        private readonly IdInterface $deliveryType,
-        private readonly IdInterface $address
+        private User $user,
+        private IdInterface $deliveryType,
+        private IdInterface $address
     ) {}
 
     public function getUser(): User

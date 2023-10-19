@@ -2,12 +2,10 @@
 
 namespace App\DataTransferObjects\Api;
 
-class RateDto
+// phpcs:disable PSR1.Files.SideEffects
+final readonly class RateDto
 {
-    public function __construct(
-        private readonly string $code,
-        private readonly mixed $rate,
-    ) {}
+    public function __construct(private string $code, private mixed $rate) {}
 
     public function code(): string
     {
