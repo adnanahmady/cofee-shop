@@ -1,8 +1,15 @@
-import {Col, Container, Row} from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Row
+} from "react-bootstrap";
+import Navbar from "./components/navbar";
+import "./App.scss";
 
 function App() {
   return (
     <Container>
+      <Navbar />
       <Row>
         <Col>Written by:</Col>
         <Col>Adnan ahmady</Col>

@@ -17,7 +17,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "prepublish": "eslint --fix --help src",
+    "prepublish": "eslint --fix ./src",
+    "fix": "npm run prepublish",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --detectOpenHandles",
@@ -42,6 +43,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "eslint-plugin-import-newlines": "^1.3.4"
   }
 }
