@@ -37,3 +37,12 @@ test:
 
 coverage:
 	@$(call execute,${service},composer coverage)
+
+start-front:
+	@$(call execute,frontend,npm start)
+
+fix-front:
+	@$(call execute,frontend,npm run fix)
+
+test-front:
+	@$(call execute,frontend,npm run test)
