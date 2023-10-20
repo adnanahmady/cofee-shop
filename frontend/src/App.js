@@ -1,22 +1,14 @@
-import {
-  Col,
-  Container,
-  Row
-} from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import Navbar from "./components/navbar";
 import "./App.scss";
+import { RouterProvider } from "react-router-dom";
+import router from "./routes/router";
 
 function App() {
   return (
     <Container>
       <Navbar />
-      <Row>
-        <Col>Written by:</Col>
-        <Col>Adnan ahmady</Col>
-      </Row>
-      <Row>
-        <Col>Rock Star Coffee Shop</Col>
-      </Row>
+      <RouterProvider router={router} />
     </Container>
   );
 }
