@@ -19,6 +19,7 @@ performs ordering process.
   * [Check Coverage](#coverage-report)
 * [Telescope](#telescope)
 * [Background Jobs](#background-jobs)
+* [Postman](#postman)
 
 ## Structure
 
@@ -28,6 +29,8 @@ The project structure is as bellow
 - .web `The nginx configurations are placed here`
 - .backend `The backend application configurations are placed here`
 - [backend](./backend) `The backend application itself is placed here`
+- .frontend `The frontend application configurations are placed here`
+- [frontend](./frontend) `The frontend application itself is placed here`
 - .gitignore `The assets that should be ignored by git`
 - docker-compose.yml `docker compose configuration`
 - Makefile `This file is here to help working with the project`
@@ -181,3 +184,10 @@ background job.
 # Diagram
 
 ![Rock star coffee database diagram](.assets/rock-star-coffee.png)
+
+# Postman
+
+You can have a postman collection of the apis.
+
+[Postman Collection](.assets/Postman/collection.json)
+[Postman Environment](.assets/Postman/environment.json)
