@@ -3,9 +3,23 @@ import {
   screen
 } from "@testing-library/react";
 import Template from "./template.jsx";
+import { authKeeper } from "../../utils/helpers/auth.js";
+
+const createTemplate = () => <Template onLogout={() => {}} />;
+
+it("should show logout when user is already loggedin", () => {
+  authKeeper.keep("some user", "some token");
+  render(createTemplate());
+  authKeeper.forget();
+
+  const link = screen.getByText("Logout");
+
+  expect(link).toBeInTheDocument();
+  expect(link).toHaveAttribute("href", "#");
+});
 
 it("should show the shop link", () => {
-  render(<Template />);
+  render(createTemplate());
 
   const element = screen.getByText(/Rock Star/);
 
@@ -13,11 +27,11 @@ it("should show the shop link", () => {
   expect(element).toBeInTheDocument();
 });
 
-it('should show managers login link', () => {
-  render(<Template />);
+it("should show managers login link", () => {
+  render(createTemplate());
 
-  const link = screen.getByText('Login as a manager');
+  const link = screen.getByText("Login as a manager");
 
   expect(link).toBeInTheDocument();
-  expect(link).toHaveAttribute('href', '/managers/login/');
+  expect(link).toHaveAttribute("href", "/managers/login/");
 });

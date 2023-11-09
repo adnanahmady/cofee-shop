@@ -9,7 +9,7 @@ const Api = (relocator, keeper) => {
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         keeper.forget();
         relocator.setLocation("/");
         relocator.relocate();
@@ -33,5 +33,3 @@ Api.propTypes = {
 };
 
 export default Api;
-
-

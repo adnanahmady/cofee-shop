@@ -5,8 +5,10 @@ import {
 } from "react-bootstrap";
 import App from "../../config/app";
 import { LOGIN_LINK as MANAGERS_LOGIN_LINK } from "../../routes/managers";
+import { isLoggedIn } from "../../utils/helpers/auth";
+import { PropTypes } from "prop-types";
 
-const Template = () => {
+const Template = ({ onLogout }) => {
   const home = App.baseUrl;
   const themeMode = App.mode;
 
@@ -20,11 +22,19 @@ const Template = () => {
         <Navbar.Brand href={home}>Rock Star</Navbar.Brand>
 
         <Nav className="ms-auto">
-          <Nav.Link href={MANAGERS_LOGIN_LINK}>Login as a manager</Nav.Link>
+          {isLoggedIn() ? (
+            <Nav.Link onClick={onLogout}>Logout</Nav.Link>
+          ) : (
+            <Nav.Link href={MANAGERS_LOGIN_LINK}>Login as a manager</Nav.Link>
+          )}
         </Nav>
       </Container>
     </Navbar>
   );
+};
+
+Template.propTypes = {
+  onLogout: PropTypes.func.isRequired,
 };
 
 export default Template;

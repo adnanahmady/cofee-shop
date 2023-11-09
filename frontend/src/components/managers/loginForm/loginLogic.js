@@ -1,5 +1,5 @@
 import auth from "../../../services/auth";
-import Relocator from "../../../utils/relocator";
+import { relocator } from "../../../utils/helpers/relocator";
 
 const LoginLogic = ({ email, password }) => {
   const login = async () => {
@@ -13,15 +13,14 @@ const LoginLogic = ({ email, password }) => {
         password: password,
         as: "manager",
       });
-      const relocator = Relocator();
-      relocator.setLocation('/');
+      relocator.setLocation("/");
       relocator.relocate();
     } catch (ex) {
       if (ex.response && ex.response.status === 422) {
         errors = ex.response.data.errors;
       }
 
-      if (ex.status === 500) {
+      if (ex.response && ex.response.status === 500) {
         isHealthy = false;
       }
       isLoggedIn = false;

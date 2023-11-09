@@ -1,10 +1,8 @@
 import Api from "../utils/api";
-import Keeper from "../utils/keepers/keeper";
-import AuthKeeper from "../utils/keepers/authKeeper";
 import Relocator from "../utils/relocator";
+import { authKeeper } from "../utils/helpers/auth";
 
-const keeper = AuthKeeper(Keeper());
-const api = Api(Relocator(), keeper);
+const api = Api(Relocator(), authKeeper);
 const VERSION = "/api/v1";
 
 export const login = async ({ email, password, as }) => {
@@ -15,11 +13,27 @@ export const login = async ({ email, password, as }) => {
     password,
     as,
   });
-  keeper.keep(meta.user, data.access_token);
+  authKeeper.keep(meta.user, data.access_token);
+
+  return data;
+};
+
+export const logout = async () => {
+  const { data } = await api.post(
+    `${VERSION}/logout`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${authKeeper.getToken()}`,
+      },
+    }
+  );
+  authKeeper.forget();
 
   return data;
 };
 
 export default {
   login,
+  logout,
 };

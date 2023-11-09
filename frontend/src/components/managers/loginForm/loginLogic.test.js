@@ -9,27 +9,21 @@ const fakeRelocator = (() => {
   let relocated = false;
 
   return {
-    setLocation: (dist) => {
-      state = dist;
-
-      return this;
-    },
+    setLocation: (dist) => (state = dist),
     relocate: () => (relocated = true),
     whereAmI: () => state,
     isRelocated: () => relocated,
   };
 })();
 const fakeInstance = () => ({
-  setLocation: jest.fn((path) => fakeRelocator.setLocation(path)),
-  relocate: jest.fn(() => fakeRelocator.relocate()),
-  whereAmI: jest.fn(() => fakeRelocator.whereAmI()),
+  setLocation: (path) => fakeRelocator.setLocation(path),
+  relocate: () => fakeRelocator.relocate(),
+  whereAmI: () => fakeRelocator.whereAmI(),
 });
-jest.mock("../../../utils/relocator", () => {
-  return {
-    __esModule: true,
-    default: fakeInstance,
-  };
-});
+jest.mock("../../../utils/relocator", () => ({
+  __esModule: true,
+  default: fakeInstance,
+}));
 
 it("should redirect the user to home path", async () => {
   jest.spyOn(Api(), "post").mockResolvedValue(loginSucceed);
