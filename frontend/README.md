@@ -1,70 +1,95 @@
-# Getting Started with Create React App
+# Rock Star Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The visual illustration of the application.
+This project is being handled by the dockerized
+container project, so to prevent any inconsistancy
+in running and installing packages you need to
+use the higher order project.
 
-## Available Scripts
+# Index
 
-In the project directory, you can run:
+- [Dockerized Container](#dockerized-container)
+    - [Starting The Container](#starting-the-container)
+    - [Loggin Into The Container](#loggin-into-the-container)
+- [The Project Commands](#the-project-commands)
+    - [Start The Project](#start)
+    - [Build The Project](#build)
+    - [Test The Project](#testing)
+    - [Code Style Fixers/Checkers](#code-style-fixers)
 
-### `npm start`
+# Dockerized Container
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Starting The Container
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+By starting the higher order dockerized project
+all of required services including `backend` and
+`frontend` will run.
 
-### `npm test`
+You can start the main project using bellow command.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```shell
+make up
+```
 
-### `npm run build`
+or you can use the docker directly like bellow command.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```shell
+docker-compose up -d
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Loggin Into The Container
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+You can access inside the container to perform
+`npm` commands using bellow command.
 
-### `npm run eject`
+```shell
+make shell service=frontend run=ash
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+or if you don't have `make`, you can access inside
+the container by this command too.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```shell
+docker-compose exec frontend ash
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# The Project Commands
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Start
 
-## Learn More
+You can start the project using bellow command.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```shell
+npm run start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+or simply
 
-### Code Splitting
+```shell
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Build
 
-### Analyzing the Bundle Size
+To build the project you need to run bellow command.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```shell
+npm run build
+```
 
-### Making a Progressive Web App
+## Code Style Fixers
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The project uses `eslinter` to unify the code style,
+and you can fix the style using bellow command.
 
-### Advanced Configuration
+```shell
+npm run fix
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Testing
 
-### Deployment
+You can run the tests using bellow command.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```shell
+npm run test
+```
