@@ -1,8 +1,10 @@
 import {
   Navbar,
-  Container
+  Container,
+  Nav
 } from "react-bootstrap";
-import App from '../../config/app';
+import App from "../../config/app";
+import { LOGIN_LINK as MANAGERS_LOGIN_LINK } from "../../routes/managers";
 
 const Template = () => {
   const home = App.baseUrl;
@@ -15,12 +17,11 @@ const Template = () => {
       variant={themeMode}
     >
       <Container>
-        <Navbar.Brand
-          href={home}
-          className="text-bg-dark"
-        >
-          Rock Star
-        </Navbar.Brand>
+        <Navbar.Brand href={home}>Rock Star</Navbar.Brand>
+
+        <Nav className="ms-auto">
+          <Nav.Link href={MANAGERS_LOGIN_LINK}>Login as a manager</Nav.Link>
+        </Nav>
       </Container>
     </Navbar>
   );
