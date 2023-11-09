@@ -11,12 +11,14 @@
     }
   ],
   "parserOptions": {
+    "parser": "@babel/eslint-parser",
     "sourceType": "module",
-    "parser": "babel-eslint",
-    "ecmaVersion": 2015,
+    "ecmaVersion": "latest",
     "ecmaFeatures": {
-      "jsx": true
-    }
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    },
+    "requireConfigFile": false
   },
   "extends": [
     "eslint:recommended",
