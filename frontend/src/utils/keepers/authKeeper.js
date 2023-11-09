@@ -19,7 +19,11 @@ const AuthKeeper = (keeper) => {
 };
 
 AuthKeeper.propTypes = {
-  keeper: PropTypes.object.isRequired,
+  keeper: PropTypes.shape({
+    get: PropTypes.func.isRequired,
+    keep: PropTypes.func.isRequired,
+    forget: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default AuthKeeper;
