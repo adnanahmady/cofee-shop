@@ -6,12 +6,13 @@ import App from '../../config/app';
 
 const Template = () => {
   const home = App.baseUrl;
+  const themeMode = App.mode;
 
   return (
     <Navbar
       expand="lg"
-      className="bg-dark text-bg-dark shadow mb-5"
-      data-bs-theme={App.theme}
+      className={"shadow mb-5 bg-" + themeMode}
+      variant={themeMode}
     >
       <Container>
         <Navbar.Brand
