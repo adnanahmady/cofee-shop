@@ -30,7 +30,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"john@shop.com\",\n    \"password\": \"password\",\n    \"as\": \"manager\"\n}"
+							"raw": "{\n    \"email\": \"john@shop.com\",\n    \"password\": \"passwordd\",\n    \"as\": \"manager\"\n}"
 						},
 						"url": {
 							"raw": "{{host}}/api/v1/login",
@@ -57,13 +57,19 @@
 									},
 									{
 										"key": "Content-Type",
+										"name": "Content-Type",
 										"value": "application/json",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"email\": \"john@shop.com\",\n    \"password\": \"password\",\n    \"as\": \"manager\"\n}"
+									"raw": "{\n    \"email\": \"john@shop.com\",\n    \"password\": \"password\",\n    \"as\": \"manager\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
 								},
 								"url": {
 									"raw": "{{host}}/api/v1/login",
@@ -124,6 +130,123 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"data\": {\n        \"access_token\": \"2|tfxu6nGSRSXFAyaTFCP680I6dQsKlasAZN5oH5tec391cf54\"\n    },\n    \"meta\": {\n        \"user\": {\n            \"id\": 1,\n            \"name\": \"John Smith\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/v1/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "logout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/api/v1/logout",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.14.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 09 Nov 2023 13:20:28 GMT"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": \"You'r logged out from system\",\n    \"meta\": {\n        \"id\": 1,\n        \"name\": \"John Smith\"\n    }\n}"
 						}
 					]
 				}
